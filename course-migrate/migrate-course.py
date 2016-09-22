@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# !/usr/bin/env python
 # Copyright (c) Microsoft Corporation. All Rights Reserved.
 # Licensed under the MIT license. See LICENSE file on the project webpage for details.
 import sys, getopt
@@ -43,7 +43,7 @@ def main(argv):
       sys.exit(0)
 
    sourceDir = ''
-   showInfo = False;
+   showInfo = False
    fromVer = ''
    toVer=''
    importAuto = False
@@ -58,7 +58,6 @@ def main(argv):
       printHelp()
       sys.exit(2)
    for opt, arg in opts:
-      #print opt, arg,'\n'
       if opt in ("-h","--help"):
          printHelp()
          sys.exit(0)
@@ -128,26 +127,26 @@ xb_list = getXBlockList()
 
 sourceDir,showInfo,fromVer,toVer,importAuto,installMissingXblocks,deleteTabs,fix = main(sys.argv[1:])
 
-files = glob.glob(sourceDir+"*.tar.gz")
+files = glob.glob(sourceDir + "*.tar.gz")
 sourceDirLen = len(sourceDir)
 
 print ""
 print "Found " + str(len(files))+ " tar.gz course files in the source folder [" + sourceDir + "]"
 print ""
 
-#in the source folder, delete if exists and create unzipped, migrated and output parent folders
-#Uncompressed and original course files will be in unzipped/ folder 
+# In the source folder, delete if exists and create unzipped, migrated and output parent folders
+# Uncompressed and original course files will be in unzipped/ folder 
 os.system('[ -e ' + sourceDir+'unzipped ] && rm -fr '+sourceDir+'unzipped')
 os.system('mkdir '+sourceDir+'unzipped')
 print 'Created ' + sourceDir+'unzipped/ folder'
 
-#Uncompressed and modified and migrated course files will be in migrated/ folder
+# Uncompressed and modified and migrated course files will be in migrated/ folder
 
 os.system('[ -e ' + sourceDir+'migrated ] && rm -fr '+sourceDir+'migrated')
 os.system('mkdir '+sourceDir+'migrated')
 print 'Created ' + sourceDir+'migrated/ folder' 
 
-#The compatibility issues fixed course files will be compressed to tar.gaz file again and will be put to folder output/
+# The compatibility issues fixed course files will be compressed to tar.gaz file again and will be put to folder output/
 os.system('[ -e ' + sourceDir+'output ] && rm -fr '+sourceDir+'output')
 os.system('mkdir '+sourceDir+'output')
 print 'Created ' + sourceDir+'output/ folder'
@@ -156,11 +155,11 @@ print ''
 missingXBlockList = []
 
 j = 1
-#for each tar.gz course file
+# for each tar.gz course file
 for f in files:
-   #Under unzipped and migrated parent folders create folders with course file name
-   fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name 
-   #Uncompress tar.gz files to these two folders
+   # Under unzipped and migrated parent folders create folders with course file name
+   fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name 
+   # Uncompress tar.gz files to these two folders
    os.system('mkdir '+sourceDir+'unzipped/'+fname)
    os.system('tar xf '+f+' -C '+sourceDir+'unzipped/'+fname)
    
@@ -173,8 +172,8 @@ for f in files:
       d = json.load(json_data)
       print " Course Name: " + d["course/course"]["display_name"]
   
-      #Advanced Modules / XBlocks 
-      if showInfo == True and len(d["course/course"]["advanced_modules"])>0:
+      # Advanced Modules / XBlocks 
+      if showInfo and len(d["course/course"]["advanced_modules"])>0:
          print " Advanced Modules:"
      
       for am in d["course/course"]["advanced_modules"]:
@@ -185,13 +184,13 @@ for f in files:
          elif am in xb_list:
             am_status = " installed " 
          else:
-            #Not-Installed XBlock
+            # Not-Installed XBlock
             if am not in missingXBlockList:
                missingXBlockList.append(am)
   
          if showInfo==True: print "  - " + am + " ["+am_status+"]"
 
-      #Info : Tabs and actions
+      # Info : Tabs and actions
       if showInfo == True:
          tabs = d["course/course"]["tabs"]
          print " Tabs:"
@@ -202,7 +201,7 @@ for f in files:
             print "  -"+t["name"] + tabPrefix
 
 
-#Print out missing xblock names
+# Print out missing xblock names
 if len(missingXBlockList) > 0: 
    print "Found missing xblocks in the target Open edX VM:"
    for mxb in missingXBlockList:
@@ -224,13 +223,13 @@ if len(missingXBlockList) > 0 and installMissingXblocks == True:
       else:
          print 'Do not know how to install missing xblock ['+mxb+']! Please add this to the script.'	
 
-#Fix the compatibility issues
+# Fix the compatibility issues
 if fix == True:
    print "Will fix the compatibility issues from ["+fromVer+"] to [" + toVer +"] version"
 
    print "RULE: Will delete the requested tabs from the courses now"
    for f in files:
-      fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
+      fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
       with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','r') as json_data:
          d = json.load(json_data)
          print " Course Name: " + d["course/course"]["display_name"]
@@ -247,11 +246,11 @@ if fix == True:
             json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
 
 
-#2 courseware (Course) tab must be the first tab in cypress
+# 2 courseware (Course) tab must be the first tab in cypress
 if toVer == "cyp":
   print "RULE: For Cypress target Open edX platform, first tab must be courseware (Course) tab. Will fix that now."   
   for f in files:
-      fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
+      fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
       with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','r') as json_data:
          d = json.load(json_data)
          tabs2 = []
@@ -267,7 +266,7 @@ if toVer == "cyp":
          with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','w') as f:
             json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
 
-#Create the new tar.gaz files in output/ folder with compatibility issues fixed.  
+# Create the new tar.gaz files in output/ folder with compatibility issues fixed.  
 os.system('chmod  777 -R ' + sourceDir+'migrated/'+fname )
 
 for f in files:
@@ -275,11 +274,11 @@ for f in files:
    os.system('tar cfz '+sourceDir+'output/'+fname+' ' + sourceDir+'migrated/'+fname+'/course')
 print 'Created output tar.gaz files'
 
-#Automatically import courses
+# Automatically import courses
 if importAuto == True:
    os.chdir('/edx/app/edxapp/edx-platform')   
    for f in files:
-      fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
+      fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
       os.system('sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws import /edx/var/edxapp/data ' + sourceDir+'migrated/'+fname+'/course')
    print "Automatically imported compatibility-issues-fixed courses from " + sourceDir+"migrated/"
 
