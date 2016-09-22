@@ -8,118 +8,118 @@ import re
 import glob
 
 def printHelp():
-   print './migrate-course.py -s <source-folder> [-f,] [-i,] [-o <origin-version>] [-t <target-version>] [-m,] [-x,] [-d <delete-tab-name>] [-p,]'
-   print ' -s : source folder that has the tar.gz files. For e.g /tmp/folder'
-   print ' -f : fix compatibility issues.'
-   print ' -i : info. Read the tar.gz files and show the summory information'
-   print ' -o : origin version. Which Open edX version these tar.gaz course files exported from. For e.g. cyp,dog,euc'
-   print ' -t : target version. Which Open edX version you want to import these tar.gaz course files into. For e.g. cyp,dog,euc'
-   print ' -m : import courses automatically. Must run the script on the Open edX VM'
-   print ' -x : install missing xblocks automatically. Must run the script on the Open edX VM'
-   print ' -d : delete the specified tab. Can use multiple times'
-   print ' -p : pretend and do not take any action. Use to verify your parameters.'
-   print ''
-   print 'The comma at the end of arguementless options are mendatory like -f, -i, -m, -x, -p,'
-   print 'You can use' 
-   print ' --info instead of -i'
-   print ' --sourcedir instead of -s'
-   print ' --origin instead of -o'
-   print ' --target instead of -t'
-   print ' --import instead of -m'
-   print ' --xblock instead of -x'
-   print ' --delete-tab instead of -d'
-   print ' --pretend instead of -p'
-   print 'Comma is still mendatory for argumentless options like --fix , --fix=, --info ,  --info=, --import=, --import ,  --xblock=, --xblock , --pretend=, --pretend ,'
-   print ''
-   print 'SAMPLE COMMANDS:'
-   print ''
-   print 'sudo ./migrate-course.py -s /tmp/source/ -i, -o dog -t cyp -m, -x, -d Discussion -d Wiki -p,'
-   print ''
-   print 'Above command means this: Source tar.gz course files are in /tmp/source/ folder. Source Open edX origin version is Dogwood, Target Open edX version is Cypress. Import courses on the target system automatically after fixing the compatibility issues. Install the missing xblocks automatically. Delete course tabs Discussion and Wiki. And pretend. Just display the options and arguments and do not take any action. To run the actual command remove the -p option. Do not forget the comma at the and of argumentless options is mandatory' 
+    print './migrate-course.py -s <source-folder> [-f,] [-i,] [-o <origin-version>] [-t <target-version>] [-m,] [-x,] [-d <delete-tab-name>] [-p,]'
+    print ' -s : source folder that has the tar.gz files. For e.g /tmp/folder'
+    print ' -f : fix compatibility issues.'
+    print ' -i : info. Read the tar.gz files and show the summory information'
+    print ' -o : origin version. Which Open edX version these tar.gaz course files exported from. For e.g. cyp,dog,euc'
+    print ' -t : target version. Which Open edX version you want to import these tar.gaz course files into. For e.g. cyp,dog,euc'
+    print ' -m : import courses automatically. Must run the script on the Open edX VM'
+    print ' -x : install missing xblocks automatically. Must run the script on the Open edX VM'
+    print ' -d : delete the specified tab. Can use multiple times'
+    print ' -p : pretend and do not take any action. Use to verify your parameters.'
+    print ''
+    print 'The comma at the end of arguementless options are mendatory like -f, -i, -m, -x, -p,'
+    print 'You can use' 
+    print ' --info instead of -i'
+    print ' --sourcedir instead of -s'
+    print ' --origin instead of -o'
+    print ' --target instead of -t'
+    print ' --import instead of -m'
+    print ' --xblock instead of -x'
+    print ' --delete-tab instead of -d'
+    print ' --pretend instead of -p'
+    print 'Comma is still mendatory for argumentless options like --fix , --fix=, --info ,  --info=, --import=, --import ,  --xblock=, --xblock , --pretend=, --pretend ,'
+    print ''
+    print 'SAMPLE COMMANDS:'
+    print ''
+    print 'sudo ./migrate-course.py -s /tmp/source/ -i, -o dog -t cyp -m, -x, -d Discussion -d Wiki -p,'
+    print ''
+    print 'Above command means this: Source tar.gz course files are in /tmp/source/ folder. Source Open edX origin version is Dogwood, Target Open edX version is Cypress. Import courses on the target system automatically after fixing the compatibility issues. Install the missing xblocks automatically. Delete course tabs Discussion and Wiki. And pretend. Just display the options and arguments and do not take any action. To run the actual command remove the -p option. Do not forget the comma at the and of argumentless options is mandatory' 
 
 def main(argv):
-   if len(argv) < 2:
-      printHelp()
-      sys.exit(0)
+    if len(argv) < 2:
+        printHelp()
+        sys.exit(0)
 
-   sourceDir = ''
-   showInfo = False
-   fromVer = ''
-   toVer=''
-   importAuto = False
-   installMissingXblocks = False
-   deleteTabs = []
-   pretend = False
-   fix = False
+    sourceDir = ''
+    showInfo = False
+    fromVer = ''
+    toVer=''
+    importAuto = False
+    installMissingXblocks = False
+    deleteTabs = []
+    pretend = False
+    fix = False
 
-   try:
-      opts, args = getopt.getopt(argv,"h:s:i:o:t:m:x:d:p:f:",["help=","sourcedir=","info=","origin=","target=","import=","xblock=","delete-tab=","pretend=","fix="])
-   except getopt.GetoptError:
-      printHelp()
-      sys.exit(2)
-   for opt, arg in opts:
-      if opt in ("-h","--help"):
-         printHelp()
-         sys.exit(0)
-      elif opt in ("-s", "--sourcedir"):
-         sourceDir = arg
-      elif opt in ("-i", "--info"):
-         showInfo = True
-      elif opt in ("-o","--origin"):
-         fromVer = arg
-      elif opt in ("-t","--target"):
-         toVer = arg
-      elif opt in ("-m","--import"):
-         importAuto = True
-      elif opt in ("-x","--xblock"):
-         installMissingXblocks = True  
-      elif opt in ("-d","--delete-tab"):
-         deleteTabs.append(arg)
-      elif opt in ("-p","--pretend"):
-         pretend = True
-      elif opt in ("-f", "--fix"):
-         fix=True
+    try:
+        opts, args = getopt.getopt(argv,"h:s:i:o:t:m:x:d:p:f:",["help=","sourcedir=","info=","origin=","target=","import=","xblock=","delete-tab=","pretend=","fix="])
+    except getopt.GetoptError:
+        printHelp()
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt in ("-h","--help"):
+            printHelp()
+            sys.exit(0)
+        elif opt in ("-s", "--sourcedir"):
+            sourceDir = arg
+        elif opt in ("-i", "--info"):
+            showInfo = True
+        elif opt in ("-o","--origin"):
+            fromVer = arg
+        elif opt in ("-t","--target"):
+            toVer = arg
+        elif opt in ("-m","--import"):
+            importAuto = True
+        elif opt in ("-x","--xblock"):
+            installMissingXblocks = True  
+        elif opt in ("-d","--delete-tab"):
+            deleteTabs.append(arg)
+        elif opt in ("-p","--pretend"):
+            pretend = True
+        elif opt in ("-f", "--fix"):
+            fix=True
 
-   if not sourceDir.endswith('/'):
-      sourceDir += "/"
+    if not sourceDir.endswith('/'):
+        sourceDir += "/"
 
-   if pretend == True:
-      print "Source Directory         : " + sourceDir
-      print "Show Info                : " + str(showInfo)
-      print "Origin Version           : " + fromVer
-      print "Target Version           : " + toVer
-      print "Import Automatically     : " + str(importAuto)
-      print "Install Missing XBlocks  : " + str(installMissingXblocks)
-      print "Fix compatibility Issues : " + str(fix)
-      print "Delete Tabs              : " + str(len(deleteTabs)) + " tabs"
-      for t in deleteTabs:
-         print " ==> " + t
-      sys.exit()
+    if pretend == True:
+        print "Source Directory         : " + sourceDir
+        print "Show Info                : " + str(showInfo)
+        print "Origin Version           : " + fromVer
+        print "Target Version           : " + toVer
+        print "Import Automatically     : " + str(importAuto)
+        print "Install Missing XBlocks  : " + str(installMissingXblocks)
+        print "Fix compatibility Issues : " + str(fix)
+        print "Delete Tabs              : " + str(len(deleteTabs)) + " tabs"
+        for t in deleteTabs:
+            print " ==> " + t
+        sys.exit()
   
-   return sourceDir,showInfo,fromVer,toVer,importAuto,installMissingXblocks,deleteTabs,fix
+    return sourceDir,showInfo,fromVer,toVer,importAuto,installMissingXblocks,deleteTabs,fix
 
 
 def getXModuleList():
-   os.system('ls -al /edx/app/edxapp/edx-platform/common/lib/xmodule/xmodule/*_module.py > /tmp/xm_list.txt')
-   xm_list = open('/tmp/xm_list.txt','r').readlines()
-   xm_newlist = []
-   for xm in xm_list:
-      xm = re.sub('.*/edx/app/edxapp/edx-platform/common/lib/xmodule/xmodule/','',xm)
-      xm = re.sub('_module.py','',xm)
-      xm_newlist.append(xm.rstrip('\n'))
+    os.system('ls -al /edx/app/edxapp/edx-platform/common/lib/xmodule/xmodule/*_module.py > /tmp/xm_list.txt')
+    xm_list = open('/tmp/xm_list.txt','r').readlines()
+    xm_newlist = []
+    for xm in xm_list:
+        xm = re.sub('.*/edx/app/edxapp/edx-platform/common/lib/xmodule/xmodule/','',xm)
+        xm = re.sub('_module.py','',xm)
+        xm_newlist.append(xm.rstrip('\n'))
 
-   return xm_newlist
+    return xm_newlist
 
 
 def getXBlockList():
-   os.system('cat /edx/app/edxapp/venvs/edxapp/lib/python*/site-packages/*xblock*/top_level.txt > /tmp/xblock_list.txt')
-   xb_list = open('/tmp/xblock_list.txt','r').readlines()
+    os.system('cat /edx/app/edxapp/venvs/edxapp/lib/python*/site-packages/*xblock*/top_level.txt > /tmp/xblock_list.txt')
+    xb_list = open('/tmp/xblock_list.txt','r').readlines()
    
-   xb_newlist =[]
-   for xb in xb_list:
-      xb_newlist.append(xb.rstrip('\n'))
+    xb_newlist =[]
+    for xb in xb_list:
+        xb_newlist.append(xb.rstrip('\n'))
 
-   return xb_newlist 
+    return xb_newlist 
 
 
 xm_list = getXModuleList()
@@ -157,130 +157,130 @@ missingXBlockList = []
 j = 1
 # for each tar.gz course file
 for f in files:
-   # Under unzipped and migrated parent folders create folders with course file name
-   fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name 
-   # Uncompress tar.gz files to these two folders
-   os.system('mkdir '+sourceDir+'unzipped/'+fname)
-   os.system('tar xf '+f+' -C '+sourceDir+'unzipped/'+fname)
+    # Under unzipped and migrated parent folders create folders with course file name
+    fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name 
+    # Uncompress tar.gz files to these two folders
+    os.system('mkdir '+sourceDir+'unzipped/'+fname)
+    os.system('tar xf '+f+' -C '+sourceDir+'unzipped/'+fname)
    
-   os.system('mkdir '+sourceDir+'migrated/'+fname)
-   os.system('tar xf '+f+' -C '+sourceDir+'migrated/'+fname)
+    os.system('mkdir '+sourceDir+'migrated/'+fname)
+    os.system('tar xf '+f+' -C '+sourceDir+'migrated/'+fname)
 
-   print str(j)+".["+fname+"]"
-   j += 1   
-   with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json') as json_data:
-      d = json.load(json_data)
-      print " Course Name: " + d["course/course"]["display_name"]
+    print str(j)+".["+fname+"]"
+    j += 1   
+    with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json') as json_data:
+        d = json.load(json_data)
+        print " Course Name: " + d["course/course"]["display_name"]
   
-      # Advanced Modules / XBlocks 
-      if showInfo and len(d["course/course"]["advanced_modules"])>0:
-         print " Advanced Modules:"
+        # Advanced Modules / XBlocks 
+        if showInfo and len(d["course/course"]["advanced_modules"])>0:
+            print " Advanced Modules:"
      
-      for am in d["course/course"]["advanced_modules"]:
-         am = am.replace('-','_');
-         am_status = " missing! "
-         if am in xm_list:
-            am_status = " built-in "
-         elif am in xb_list:
-            am_status = " installed " 
-         else:
-            # Not-Installed XBlock
-            if am not in missingXBlockList:
-               missingXBlockList.append(am)
+        for am in d["course/course"]["advanced_modules"]:
+            am = am.replace('-','_');
+            am_status = " missing! "
+            if am in xm_list:
+                am_status = " built-in "
+            elif am in xb_list:
+                am_status = " installed " 
+            else:
+                # Not-Installed XBlock
+                if am not in missingXBlockList:
+                    missingXBlockList.append(am)
   
-         if showInfo==True: print "  - " + am + " ["+am_status+"]"
+            if showInfo==True: print "  - " + am + " ["+am_status+"]"
 
-      # Info : Tabs and actions
-      if showInfo == True:
-         tabs = d["course/course"]["tabs"]
-         print " Tabs:"
-         for t in tabs:
-            tabPrefix = ''
-            if t["name"] in deleteTabs:
-               tabPrefix = " [ Action: Delete ]"  
-            print "  -"+t["name"] + tabPrefix
+        # Info : Tabs and actions
+        if showInfo == True:
+            tabs = d["course/course"]["tabs"]
+            print " Tabs:"
+            for t in tabs:
+                tabPrefix = ''
+                if t["name"] in deleteTabs:
+                    tabPrefix = " [ Action: Delete ]"  
+                print "  -"+t["name"] + tabPrefix
 
 
 # Print out missing xblock names
 if len(missingXBlockList) > 0: 
-   print "Found missing xblocks in the target Open edX VM:"
-   for mxb in missingXBlockList:
-      print " -" + mxb
-   print "If you want to install these xblock automatically use -x, or --xblock=, option"
+    print "Found missing xblocks in the target Open edX VM:"
+    for mxb in missingXBlockList:
+        print " -" + mxb
+    print "If you want to install these xblock automatically use -x, or --xblock=, option"
 
 if len(missingXBlockList) <= 0 and installMissingXblocks == True:
-   print "There are no any missing xblock on the VM"
+    print "There are no any missing xblock on the VM"
 
 if len(missingXBlockList) > 0 and installMissingXblocks == True:
-   list_xb = {'lti_consumer':'https://github.com/edx/xblock-lti-consumer.git','azure_media_services':'https://github.com/Microsoft/xblock-azure-media-services.git','oembed':'https://github.com/Microsoft/xblock-oembed.git','onedrive':'https://github.com/Microsoft/xblock-onedrive.git','officevideo':'https://github.com/Microsoft/xblock-officevideo.git','filestorage':'https://github.com/Microsoft/xblock-filestorage.git','pdf':'https://github.com/MarCnu/pdfXBlock.git','poll':'https://github.com/mckinseyacademy/xblock-poll.git','survey':'https://github.com/mckinseyacademy/xblock-poll.git','drag_and_drop_v2':'https://github.com/edx-solutions/xblock-drag-and-drop-v2.git' }    
+    list_xb = {'lti_consumer':'https://github.com/edx/xblock-lti-consumer.git','azure_media_services':'https://github.com/Microsoft/xblock-azure-media-services.git','oembed':'https://github.com/Microsoft/xblock-oembed.git','onedrive':'https://github.com/Microsoft/xblock-onedrive.git','officevideo':'https://github.com/Microsoft/xblock-officevideo.git','filestorage':'https://github.com/Microsoft/xblock-filestorage.git','pdf':'https://github.com/MarCnu/pdfXBlock.git','poll':'https://github.com/mckinseyacademy/xblock-poll.git','survey':'https://github.com/mckinseyacademy/xblock-poll.git','drag_and_drop_v2':'https://github.com/edx-solutions/xblock-drag-and-drop-v2.git' }    
 
-   xb_keys = list_xb.keys()
-   for mxb in missingXBlockList:
-      if mxb in xb_keys:
-         print 'Installing missing xblock ['+ mxb+'] from ['+list_xb[mxb]+']'
-         os.system('sudo -H -u edxapp /edx/bin/pip.edxapp install git+'+list_xb[mxb])	
-         print 'Installed xblock: ' + mxb
-      else:
-         print 'Do not know how to install missing xblock ['+mxb+']! Please add this to the script.'	
+    xb_keys = list_xb.keys()
+    for mxb in missingXBlockList:
+        if mxb in xb_keys:
+            print 'Installing missing xblock ['+ mxb+'] from ['+list_xb[mxb]+']'
+            os.system('sudo -H -u edxapp /edx/bin/pip.edxapp install git+'+list_xb[mxb])	
+            print 'Installed xblock: ' + mxb
+        else:
+            print 'Do not know how to install missing xblock ['+mxb+']! Please add this to the script.'	
 
 # Fix the compatibility issues
 if fix == True:
-   print "Will fix the compatibility issues from ["+fromVer+"] to [" + toVer +"] version"
+    print "Will fix the compatibility issues from ["+fromVer+"] to [" + toVer +"] version"
 
-   print "RULE: Will delete the requested tabs from the courses now"
-   for f in files:
-      fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
-      with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','r') as json_data:
-         d = json.load(json_data)
-         print " Course Name: " + d["course/course"]["display_name"]
-         tabs2 = []
-         tabs= d["course/course"]["tabs"]
-         for t in tabs:
-	    if t["name"] in deleteTabs:
-               print " ==>  Found and deleting tab " + t["name"] 
-            else:
-               tabs2.append(t) 	
-         d["course/course"]["tabs"] = tabs2
+    print "RULE: Will delete the requested tabs from the courses now"
+    for f in files:
+        fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
+        with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','r') as json_data:
+            d = json.load(json_data)
+            print " Course Name: " + d["course/course"]["display_name"]
+            tabs2 = []
+            tabs= d["course/course"]["tabs"]
+            for t in tabs:
+	        if t["name"] in deleteTabs:
+                    print " ==>  Found and deleting tab " + t["name"] 
+                else:
+                    tabs2.append(t) 	
+            d["course/course"]["tabs"] = tabs2
 
-         with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','w') as f:
-            json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
+            with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','w') as f:
+                json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
 
 
 # 2 courseware (Course) tab must be the first tab in cypress
 if toVer == "cyp":
-  print "RULE: For Cypress target Open edX platform, first tab must be courseware (Course) tab. Will fix that now."   
-  for f in files:
-      fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
-      with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','r') as json_data:
-         d = json.load(json_data)
-         tabs2 = []
-         tabs= d["course/course"]["tabs"]
-         for t in tabs:
-            if t["type"] == "courseware":
-               print " ==>  ["+d["course/course"]["display_name"]+"] Course is found and set as the first tab: " + t["name"]
-               tabs2.insert(0,t)
-            else:
-               tabs2.append(t)
-         d["course/course"]["tabs"] = tabs2
+   print "RULE: For Cypress target Open edX platform, first tab must be courseware (Course) tab. Will fix that now."   
+   for f in files:
+        fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
+        with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','r') as json_data:
+            d = json.load(json_data)
+            tabs2 = []
+            tabs= d["course/course"]["tabs"]
+            for t in tabs:
+                if t["type"] == "courseware":
+                    print " ==>  ["+d["course/course"]["display_name"]+"] Course is found and set as the first tab: " + t["name"]
+                    tabs2.insert(0,t)
+                else:
+                    tabs2.append(t)
+            d["course/course"]["tabs"] = tabs2
 
-         with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','w') as f:
-            json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
+            with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','w') as f:
+                json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
 
 # Create the new tar.gaz files in output/ folder with compatibility issues fixed.  
 os.system('chmod  777 -R ' + sourceDir+'migrated/'+fname )
 
 for f in files:
-   fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
-   os.system('tar cfz '+sourceDir+'output/'+fname+' ' + sourceDir+'migrated/'+fname+'/course')
+    fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
+    os.system('tar cfz '+sourceDir+'output/'+fname+' ' + sourceDir+'migrated/'+fname+'/course')
 print 'Created output tar.gaz files'
 
 # Automatically import courses
 if importAuto == True:
-   os.chdir('/edx/app/edxapp/edx-platform')   
-   for f in files:
-      fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
-      os.system('sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws import /edx/var/edxapp/data ' + sourceDir+'migrated/'+fname+'/course')
-   print "Automatically imported compatibility-issues-fixed courses from " + sourceDir+"migrated/"
+    os.chdir('/edx/app/edxapp/edx-platform')   
+    for f in files:
+        fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
+        os.system('sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws import /edx/var/edxapp/data ' + sourceDir+'migrated/'+fname+'/course')
+    print "Automatically imported compatibility-issues-fixed courses from " + sourceDir+"migrated/"
 
 print "Successfully completed migration"
 
