@@ -1,6 +1,11 @@
 <h1>Course-Migrate Tool</h1>
 <br/><br/>
 This command line Python tool fixes the known compatibility issues between different versions of Open edX courses and can migrate courses to Open edX paltform automatically using the tar.gz course files.<br/>
+You also need to install lxml and bs4 python modules to be able to use this tool with commands: <br/>
+<ul>
+  <li>pip install <b>bs4</b></li>
+  <li>pip install <b>lxml</b></li> 
+</ul>
 <br/>
 Open edX Course Migration Tool Capabilities:<br/>
 - Reads tar.gz course files from a folder<br/>
