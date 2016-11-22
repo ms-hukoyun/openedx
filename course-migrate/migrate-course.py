@@ -10,8 +10,9 @@ import bs4 as bs
 
 # remove video_upload_pipeline fro json file
 def removeVideoUploadPipelineJson(fileName):
+    print "removeVideoUploadPipelineJson: " +fileName
     with open(fileName,'r') as json_data:
-        d = json.load(json_data
+        d = json.load(json_data)
 	if 'video_upload_pipeline' in d['course/course']:
             print "Found video_upload_pipeline in file [" + fileName + "] and removing it."
 	    del d['course/course']['video_upload_pipeline']
@@ -21,8 +22,9 @@ def removeVideoUploadPipelineJson(fileName):
 
 # remove video_upload_pipeline attribute from xml file
 def removeVideoUploadPipelineXml(fileName):
+    print "removeVideoUploadPipelineXml: " + fileName
     soup = bs.BeautifulSoup(open(fileName,'r'),'xml')
-    myCourse = soup('course')
+    myCourse = soup.course
 
     if 'video_upload_pipeline' in myCourse.attrs:
         print "Found video_upload_pipeline in file [" + fileName + "] and removing it."
@@ -317,9 +319,9 @@ if fix == True and videoUploadPipeline == True:
     print "RULE: Remove video_upload_pipeline info if any exists from policy.json. Also remove video_upload_pipeline from attributes of course.xml"
     for f in files:
         fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
-
-	removeVideoUploadPipelineXml( sourceDir+'migrated/'+fname+'/course/course/course.xml' )	
+	
 	removeVideoUploadPipelineJson( sourceDir+'migrated/'+fname+'/course/policies/course/policy.json' )
+	removeVideoUploadPipelineXml( sourceDir+'migrated/'+fname+'/course/course/course.xml' )	
 	    
 
 # Fix the Problem-Souliton issue. Solution section must be directly under problem.
@@ -332,7 +334,7 @@ if fix == True:
            fixProblemSolutionSection(fp)
 
 # Create the new tar.gaz files in output/ folder with compatibility issues fixed.  
-os.system('chmod  777 -R ' + sourceDir+'migrated/')
+os.system('chmod  777 -R ' + sourceDir+'migrated/' )
 
 for f in files:
     fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
