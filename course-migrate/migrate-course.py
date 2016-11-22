@@ -95,7 +95,7 @@ def main(argv):
     videoUploadPipeline = False
 
     try:
-        opts, args = getopt.getopt(argv,"h:s:i:o:t:m:x:d:p:f:v:",["help=","sourcedir=","info=","origin=","target=","import=","xblock=","delete-tab=","pretend=","fix=","video-upload-pipeline"])
+        opts, args = getopt.getopt(argv,"h:s:i:o:t:m:x:d:p:f:v:",["help=","sourcedir=","info=","origin=","target=","import=","xblock=","delete-tab=","pretend=","fix=","video-upload-pipeline="])
     except getopt.GetoptError:
         printHelp()
         sys.exit(2)
@@ -122,7 +122,7 @@ def main(argv):
         elif opt in ("-f", "--fix"):
             fix = True
 	elif opt in ("-v","--video-upload-pipeline"):
-	    videoUploadPipeline = False
+	    videoUploadPipeline = True
 
     if not sourceDir.endswith('/'):
         sourceDir += "/"
