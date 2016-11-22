@@ -8,6 +8,30 @@ import re
 import glob
 import bs4 as bs
 
+# remove video_upload_pipeline fro json file
+def removeVideoUploadPipelineJson(fileName):
+    with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','r') as json_data:
+        d = json.load(json_data)
+	if d["course/course"]["video_upload_pipeline"]:
+            print "Found video_upload_pipeline in file [" + fileName + "] and removing it."
+	    del d["course/course"]["video_upload_pipeline"]
+	    with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','w') as f:
+	        json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
+
+
+# remove video_upload_pipeline attribute from xml file
+def removeVideoUploadPipelineXml(fileName):
+    soup = bs.BeautifulSoup(open(fileName,'r'),'xml')
+    myCourse = soup('course')
+
+    if len(myCourse) > 0 and myCourse['video_upload_pipeline']:
+        print "Found video_upload_pipeline in file [" + fileName + "] and removing it."
+        del myCourse['video_upload_pipeline'] 
+
+        with open(fileName,'w') as w:
+            w.write(soup.encode('utf8'))
+
+
 # solution must be directly under problem. Fix it.
 def fixProblemSolutionSection(fileName):
     soup = bs.BeautifulSoup(open(fileName,'r'),'xml')
@@ -16,14 +40,14 @@ def fixProblemSolutionSection(fileName):
 
     if len(myProblem) > 0 and len(mySolution) > 0 and mySolution[0].parent.name != 'problem':
         print "Problem File: " + fileName + ". Moving solution section directly under the problem section."
-        myProblem[0].insert(len(myProblem[0].contents),mySolution[0])
+        myProblem[0].insert(len(myProblem[0].contents),mySolution[0]) 
 
-    with open(fileName,'w') as w:
-        w.write(soup.encode('utf8'))
+        with open(fileName,'w') as w:
+            w.write(soup.encode('utf8'))
 
 
 def printHelp():
-    print './migrate-course.py -s <source-folder> [-f,] [-i,] [-o <origin-version>] [-t <target-version>] [-m,] [-x,] [-d <delete-tab-name>] [-p,]'
+    print './migrate-course.py -s <source-folder> [-f,] [-i,] [-o <origin-version>] [-t <target-version>] [-m,] [-x,] [-v,] [-d <delete-tab-name>] [-p,]'
     print ' -s : source folder that has the tar.gz files. For e.g /tmp/folder'
     print ' -f : fix compatibility issues.'
     print ' -i : info. Read the tar.gz files and show the summory information'
@@ -33,6 +57,7 @@ def printHelp():
     print ' -x : install missing xblocks automatically. Must run the script on the Open edX VM'
     print ' -d : delete the specified tab. Can use multiple times'
     print ' -p : pretend and do not take any action. Use to verify your parameters.'
+    print ' -v : remove video_upload_pipeline info from course definition'
     print ''
     print 'The comma at the end of arguementless options are mendatory like -f, -i, -m, -x, -p,'
     print 'You can use' 
@@ -44,6 +69,7 @@ def printHelp():
     print ' --xblock instead of -x'
     print ' --delete-tab instead of -d'
     print ' --pretend instead of -p'
+    print ' --video-upload-pipeline instead of -v'
     print 'Comma is still mendatory for argumentless options like --fix , --fix=, --info ,  --info=, --import=, --import ,  --xblock=, --xblock , --pretend=, --pretend ,'
     print ''
     print 'SAMPLE COMMANDS:'
@@ -66,9 +92,10 @@ def main(argv):
     deleteTabs = []
     pretend = False
     fix = False
+    videoUploadPipeline = False
 
     try:
-        opts, args = getopt.getopt(argv,"h:s:i:o:t:m:x:d:p:f:",["help=","sourcedir=","info=","origin=","target=","import=","xblock=","delete-tab=","pretend=","fix="])
+        opts, args = getopt.getopt(argv,"h:s:i:o:t:m:x:d:p:f:v:",["help=","sourcedir=","info=","origin=","target=","import=","xblock=","delete-tab=","pretend=","fix=","video-upload-pipeline"])
     except getopt.GetoptError:
         printHelp()
         sys.exit(2)
@@ -93,7 +120,9 @@ def main(argv):
         elif opt in ("-p","--pretend"):
             pretend = True
         elif opt in ("-f", "--fix"):
-            fix=True
+            fix = True
+	elif opt in ("-v","--video-upload-pipeline")
+	    videoUploadPipeline = False
 
     if not sourceDir.endswith('/'):
         sourceDir += "/"
@@ -106,12 +135,14 @@ def main(argv):
         print "Import Automatically     : " + str(importAuto)
         print "Install Missing XBlocks  : " + str(installMissingXblocks)
         print "Fix compatibility Issues : " + str(fix)
+	print "Video Upload Pipleline   : " + str(videoUploadPipeline)
         print "Delete Tabs              : " + str(len(deleteTabs)) + " tabs"
         for t in deleteTabs:
             print " ==> " + t
         sys.exit()
   
-    return sourceDir,showInfo,fromVer,toVer,importAuto,installMissingXblocks,deleteTabs,fix
+    return sourceDir,showInfo,fromVer,toVer,importAuto,installMissingXblocks,deleteTabs,fix,videoUploadPipeline
+
 
 
 def getXModuleList():
@@ -140,7 +171,7 @@ def getXBlockList():
 xm_list = getXModuleList()
 xb_list = getXBlockList()
 
-sourceDir,showInfo,fromVer,toVer,importAuto,installMissingXblocks,deleteTabs,fix = main(sys.argv[1:])
+sourceDir,showInfo,fromVer,toVer,importAuto,installMissingXblocks,deleteTabs,fix,videoUploadPipeline = main(sys.argv[1:])
 
 files = glob.glob(sourceDir + "*.tar.gz")
 sourceDirLen = len(sourceDir)
@@ -262,8 +293,8 @@ if fix == True:
 
 
 # 2 courseware (Course) tab must be the first tab in cypress
-if toVer == "cyp" or toVer=="dog":
-   print "RULE: For Cypress target Open edX platform, first tab must be courseware (Course) tab. Will fix that now."   
+if fix == True and (toVer == "cyp" or toVer=="dog"):
+   print "RULE: For Cypress and Dogwood target Open edX platform, first tab must be courseware (Course) tab. Will fix that now."   
    for f in files:
         fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
         with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','r') as json_data:
@@ -281,12 +312,23 @@ if toVer == "cyp" or toVer=="dog":
             with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','w') as f:
                 json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
 
+# Remove video_upload_pipeline info if any exists
+if fix == True and videoUploadPipeline == True:
+    print "RULE: Remove video_upload_pipeline info if any exists from policy.json. Also remove video_upload_pipeline from attributes of course.xml"
+    for f in files:
+        fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
+
+	removeVideoUploadPipelineXml( sourceDir+'migrated/'+fname+'/course/course/course.xml' )	
+	removeVideoUploadPipelineJson( sourceDir+'migrated/'+fname+'/course/policies/course/policy.json' )
+	    
+
 # Fix the Problem-Souliton issue. Solution section must be directly under problem.
-print "RULE: Fix the Problem-Solution issue. In problem xmls solution section must be directly under problem section."
-for f in files:
-    problemFiles = glob.glob(sourceDir + "migrated/"+fname+"/course/problem/*.xml")
-    for fp in problemFiles:
-       fixProblemSolutionSection(fp)
+if fix == True 
+    print "RULE: Fix the Problem-Solution issue. In problem xmls solution section must be directly under problem section."
+    for f in files:
+        problemFiles = glob.glob(sourceDir + "migrated/"+fname+"/course/problem/*.xml")
+        for fp in problemFiles:
+           fixProblemSolutionSection(fp)
 
 # Create the new tar.gaz files in output/ folder with compatibility issues fixed.  
 os.system('chmod  777 -R ' + sourceDir+'migrated/'+fname )
@@ -294,7 +336,11 @@ os.system('chmod  777 -R ' + sourceDir+'migrated/'+fname )
 for f in files:
     fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
     os.system('tar cfz '+sourceDir+'output/'+fname+' ' + sourceDir+'migrated/'+fname+'/course')
+
 print 'Created output tar.gaz files'
+# Give everymody read right so that import command doesn't need sudo right. File is creted with root:root
+os.system('chmod  777 -R ' + sourceDir+'output/*')
+
 
 # Automatically import courses
 if importAuto == True:
