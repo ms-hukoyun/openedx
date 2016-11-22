@@ -121,7 +121,7 @@ def main(argv):
             pretend = True
         elif opt in ("-f", "--fix"):
             fix = True
-	elif opt in ("-v","--video-upload-pipeline")
+	elif opt in ("-v","--video-upload-pipeline"):
 	    videoUploadPipeline = False
 
     if not sourceDir.endswith('/'):
@@ -323,7 +323,7 @@ if fix == True and videoUploadPipeline == True:
 	    
 
 # Fix the Problem-Souliton issue. Solution section must be directly under problem.
-if fix == True 
+if fix == True: 
     print "RULE: Fix the Problem-Solution issue. In problem xmls solution section must be directly under problem section."
     for f in files:
         problemFiles = glob.glob(sourceDir + "migrated/"+fname+"/course/problem/*.xml")
