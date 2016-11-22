@@ -11,10 +11,10 @@ import bs4 as bs
 # remove video_upload_pipeline fro json file
 def removeVideoUploadPipelineJson(fileName):
     with open(fileName,'r') as json_data:
-        d = json.load(json_data)
-	if d["course/course"]["video_upload_pipeline"]:
+        d = json.load(json_data
+	if 'video_upload_pipeline' in d['course/course']:)
             print "Found video_upload_pipeline in file [" + fileName + "] and removing it."
-	    del d["course/course"]["video_upload_pipeline"]
+	    del d['course/course']['video_upload_pipeline']
 	    with open(fileName,'w') as f:
 	        json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
 
@@ -24,7 +24,7 @@ def removeVideoUploadPipelineXml(fileName):
     soup = bs.BeautifulSoup(open(fileName,'r'),'xml')
     myCourse = soup('course')
 
-    if len(myCourse) > 0 and myCourse['video_upload_pipeline']:
+    if 'video_upload_pipeline' in myCourse.attrs:
         print "Found video_upload_pipeline in file [" + fileName + "] and removing it."
         del myCourse['video_upload_pipeline'] 
 
@@ -326,6 +326,7 @@ if fix == True and videoUploadPipeline == True:
 if fix == True: 
     print "RULE: Fix the Problem-Solution issue. In problem xmls solution section must be directly under problem section."
     for f in files:
+        fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
         problemFiles = glob.glob(sourceDir + "migrated/"+fname+"/course/problem/*.xml")
         for fp in problemFiles:
            fixProblemSolutionSection(fp)
