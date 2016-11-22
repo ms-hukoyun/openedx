@@ -12,7 +12,7 @@ import bs4 as bs
 def removeVideoUploadPipelineJson(fileName):
     with open(fileName,'r') as json_data:
         d = json.load(json_data
-	if 'video_upload_pipeline' in d['course/course']:)
+	if 'video_upload_pipeline' in d['course/course']:
             print "Found video_upload_pipeline in file [" + fileName + "] and removing it."
 	    del d['course/course']['video_upload_pipeline']
 	    with open(fileName,'w') as f:
