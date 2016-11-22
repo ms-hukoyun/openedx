@@ -6,6 +6,21 @@ import json
 import os
 import re
 import glob
+import bs4 as bs
+
+# solution must be directly under problem. Fix it.
+def fixProblemSolutionSection(fileName):
+    soup = bs.BeautifulSoup(open(fileName,'r'),'xml')
+    mySolution = soup('solution')
+    myProblem = soup('problem')
+
+    if len(myProblem) > 0 and len(mySolution) > 0 and mySolution[0].parent.name != 'problem':
+        print "Problem File: " + fileName + ". Moving solution section directly under the problem section."
+        myProblem[0].insert(len(myProblem[0].contents),mySolution[0])
+
+    with open(fileName,'w') as w:
+        w.write(soup.encode('utf8'))
+
 
 def printHelp():
     print './migrate-course.py -s <source-folder> [-f,] [-i,] [-o <origin-version>] [-t <target-version>] [-m,] [-x,] [-d <delete-tab-name>] [-p,]'
@@ -247,7 +262,7 @@ if fix == True:
 
 
 # 2 courseware (Course) tab must be the first tab in cypress
-if toVer == "cyp":
+if toVer == "cyp" or toVer=="dog":
    print "RULE: For Cypress target Open edX platform, first tab must be courseware (Course) tab. Will fix that now."   
    for f in files:
         fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
@@ -265,6 +280,13 @@ if toVer == "cyp":
 
             with open(sourceDir+'migrated/'+fname+'/course/policies/course/policy.json','w') as f:
                 json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
+
+# Fix the Problem-Souliton issue. Solution section must be directly under problem.
+print "RULE: Fix the Problem-Solution issue. In problem xmls solution section must be directly under problem section."
+for f in files:
+    problemFiles = glob.glob(sourceDir + "migrated/"+fname+"/course/problem/*.xml")
+    for fp in problemFiles:
+       fixProblemSolutionSection(fp)
 
 # Create the new tar.gaz files in output/ folder with compatibility issues fixed.  
 os.system('chmod  777 -R ' + sourceDir+'migrated/'+fname )
