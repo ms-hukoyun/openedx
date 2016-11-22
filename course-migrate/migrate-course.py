@@ -331,7 +331,7 @@ if fix == True:
            fixProblemSolutionSection(fp)
 
 # Create the new tar.gaz files in output/ folder with compatibility issues fixed.  
-os.system('chmod  777 -R ' + sourceDir+'migrated/'+fname )
+os.system('chmod  777 -R ' + sourceDir+'migrated/')
 
 for f in files:
     fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
