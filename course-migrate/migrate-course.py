@@ -10,11 +10,10 @@ import bs4 as bs
 
 # remove video_upload_pipeline fro json file
 def removeVideoUploadPipelineJson(fileName):
-    print "removeVideoUploadPipelineJson: " +fileName
     with open(fileName,'r') as json_data:
         d = json.load(json_data)
 	if 'video_upload_pipeline' in d['course/course']:
-            print "Found video_upload_pipeline in file [" + fileName + "] and removing it."
+            print " ==> Found video_upload_pipeline in file [" + fileName + "] and removed."
 	    del d['course/course']['video_upload_pipeline']
 	    with open(fileName,'w') as f:
 	        json.dump(d,f, sort_keys=False, indent=4, separators=(',', ': '))
@@ -22,12 +21,11 @@ def removeVideoUploadPipelineJson(fileName):
 
 # remove video_upload_pipeline attribute from xml file
 def removeVideoUploadPipelineXml(fileName):
-    print "removeVideoUploadPipelineXml: " + fileName
     soup = bs.BeautifulSoup(open(fileName,'r'),'xml')
     myCourse = soup.course
 
     if 'video_upload_pipeline' in myCourse.attrs:
-        print "Found video_upload_pipeline in file [" + fileName + "] and removing it."
+        print " ==> Found video_upload_pipeline in file [" + fileName + "] and removed."
         del myCourse['video_upload_pipeline'] 
 
         with open(fileName,'w') as w:
@@ -41,7 +39,7 @@ def fixProblemSolutionSection(fileName):
     myProblem = soup('problem')
 
     if len(myProblem) > 0 and len(mySolution) > 0 and mySolution[0].parent.name != 'problem':
-        print "Problem File: " + fileName + ". Moving solution section directly under the problem section."
+        print "Fixing problem file: " + fileName
         myProblem[0].insert(len(myProblem[0].contents),mySolution[0]) 
 
         with open(fileName,'w') as w:
@@ -155,7 +153,8 @@ def getXModuleList():
         xm = re.sub('.*/edx/app/edxapp/edx-platform/common/lib/xmodule/xmodule/','',xm)
         xm = re.sub('_module.py','',xm)
         xm_newlist.append(xm.rstrip('\n'))
-
+    
+    xm_newlist.append('done')
     return xm_newlist
 
 
@@ -253,8 +252,8 @@ for f in files:
 if len(missingXBlockList) > 0: 
     print "Found missing xblocks in the target Open edX VM:"
     for mxb in missingXBlockList:
-        print " -" + mxb
-    print "If you want to install these xblock automatically use -x, or --xblock=, option"
+        print " ==> " + mxb
+    print " If you want to install these xblock automatically use -x, or --xblock=, option"
 
 if len(missingXBlockList) <= 0 and installMissingXblocks == True:
     print "There are no any missing xblock on the VM"
@@ -265,16 +264,17 @@ if len(missingXBlockList) > 0 and installMissingXblocks == True:
     xb_keys = list_xb.keys()
     for mxb in missingXBlockList:
         if mxb in xb_keys:
-            print 'Installing missing xblock ['+ mxb+'] from ['+list_xb[mxb]+']'
+            print ' ==> Installing missing xblock ['+ mxb+'] from ['+list_xb[mxb]+']'
             os.system('sudo -H -u edxapp /edx/bin/pip.edxapp install git+'+list_xb[mxb])	
-            print 'Installed xblock: ' + mxb
+            print ' ==> Installed xblock: ' + mxb
         else:
-            print 'Do not know how to install missing xblock ['+mxb+']! Please add this to the script.'	
+            print ' ==> Do not know how to install missing xblock ['+mxb+']! Please add this to the script.'	
 
 # Fix the compatibility issues
 if fix == True:
     print "Will fix the compatibility issues from ["+fromVer+"] to [" + toVer +"] version"
 
+if fix == True and len(deleteTabs) > 0:
     print "RULE: Will delete the requested tabs from the courses now"
     for f in files:
         fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
@@ -285,7 +285,7 @@ if fix == True:
             tabs= d["course/course"]["tabs"]
             for t in tabs:
 	        if t["name"] in deleteTabs:
-                    print " ==>  Found and deleting tab " + t["name"] 
+                    print " ==>  Found and deleted tab " + t["name"] 
                 else:
                     tabs2.append(t) 	
             d["course/course"]["tabs"] = tabs2
@@ -305,7 +305,7 @@ if fix == True and (toVer == "cyp" or toVer=="dog"):
             tabs= d["course/course"]["tabs"]
             for t in tabs:
                 if t["type"] == "courseware":
-                    print " ==>  ["+d["course/course"]["display_name"]+"] Course is found and set as the first tab: " + t["name"]
+                    print " ==>  ["+d["course/course"]["display_name"]+"] 'Course' is found and set as the first tab"
                     tabs2.insert(0,t)
                 else:
                     tabs2.append(t)
@@ -340,18 +340,19 @@ for f in files:
     fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
     os.system('tar cfz '+sourceDir+'output/'+fname+' ' + sourceDir+'migrated/'+fname+'/course')
 
-print 'Created output tar.gaz files'
+print 'Created output tar.gaz files under ' +sourceDir+'/output/'
 # Give everymody read right so that import command doesn't need sudo right. File is creted with root:root
 os.system('chmod  777 -R ' + sourceDir+'output/*')
 
 
 # Automatically import courses
 if importAuto == True:
-    os.chdir('/edx/app/edxapp/edx-platform')   
+    os.chdir('/edx/app/edxapp/edx-platform') 
+    print "Automatically importing compatibility-issues-fixed courses from " + sourceDir+"migrated/"  
     for f in files:
         fname = f[sourceDirLen:] # Remove the path from full file name. Now have only file name
+        print " ==> Importing course from " + fname
         os.system('sudo -u www-data /edx/bin/python.edxapp ./manage.py cms --settings=aws import /edx/var/edxapp/data ' + sourceDir+'migrated/'+fname+'/course')
-    print "Automatically imported compatibility-issues-fixed courses from " + sourceDir+"migrated/"
 
 print "Successfully completed migration"
 
