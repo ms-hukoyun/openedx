@@ -220,22 +220,22 @@ for f in files:
         print " Course Name: " + d["course/course"]["display_name"]
   
         # Advanced Modules / XBlocks 
-        if showInfo and len(d["course/course"]["advanced_modules"])>0:
+        if showInfo and d["course/course"].get("advanced_modules") and  len(d["course/course"]["advanced_modules"])>0:
             print " Advanced Modules:"
      
-        for am in d["course/course"]["advanced_modules"]:
-            am = am.replace('-','_');
-            am_status = " missing! "
-            if am in xm_list:
-                am_status = " built-in "
-            elif am in xb_list:
-                am_status = " installed " 
-            else:
-                # Not-Installed XBlock
-                if am not in missingXBlockList:
-                    missingXBlockList.append(am)
+            for am in d["course/course"]["advanced_modules"]:
+                am = am.replace('-','_');
+                am_status = " missing! "
+                if am in xm_list:
+                    am_status = " built-in "
+                elif am in xb_list:
+                    am_status = " installed " 
+                else:
+                    # Not-Installed XBlock
+                    if am not in missingXBlockList:
+                        missingXBlockList.append(am)
   
-            if showInfo==True: print "  - " + am + " ["+am_status+"]"
+                if showInfo==True: print "  - " + am + " ["+am_status+"]"
 
         # Info : Tabs and actions
         if showInfo == True:
@@ -340,7 +340,7 @@ for f in files:
     fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
     os.system('tar cfz '+sourceDir+'output/'+fname+' ' + sourceDir+'migrated/'+fname+'/course')
 
-print 'Created output tar.gaz files under ' +sourceDir+'/output/'
+print 'Created output tar.gaz files under ' +sourceDir+'output/'
 # Give everymody read right so that import command doesn't need sudo right. File is creted with root:root
 os.system('chmod  777 -R ' + sourceDir+'output/*')
 
