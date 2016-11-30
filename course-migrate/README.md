@@ -26,6 +26,7 @@ TOOL:<br/>
  -m : import courses automatically. Must run the script on the Open edX VM<br/>
  -x : install missing xblocks automatically. Must run the script on the Open edX VM<br/>
  -d : delete the specified tab. Can use multiple times<br/>
+ -v : remove video_upload_pipeline info from course definition<br/>
  -p : pretend and do not take any action. Use to verify your parameters.<br/>
 <br/>
 The comma at the end of arguementless options are mendatory like -f, -i, -m, -x, -p,<br/>
@@ -37,8 +38,9 @@ The comma at the end of arguementless options are mendatory like -f, -i, -m, -x,
  --import instead of -m<br/>
  --xblock instead of -x<br/>
  --delete-tab instead of -d<br/>
+ --video-upload-pipeline instead of -v<br/>
  --pretend instead of -p<br/>
-<br/>Comma is still mendatory for argumentless options like --fix , --fix=, --info ,  --info=, --import=, --import ,  --xblock=, --xblock , --pretend=, --pretend ,<br/>
+<br/>Comma is still mendatory for argumentless options like --fix , --fix=, --info ,  --info=, --import=, --import ,  --xblock=, --xblock , --pretend=, --pretend , --video-upload-pipeline=, --video-upload-pipeline ,<br/>
 
 SAMPLE COMMANDS:<br/>
 <br/>
@@ -57,6 +59,7 @@ sudo ./migrate-course.py –sourcedir=/tmp/courses --import , <br/>
 <br/>
 RULES FOR COMPATIBILITY ISSUE FIXES:<br/>
 - Course (courseware) must be the first tab in Cypress<br/>
+- Solution tag must be directly under Problem section in problem xmls<br/>
 - Discussion tab not wanted, can remove tabs<br/>
 - Determine the missing xblocks and install if requested<br/>
 - More rules can be added to the tool as we figure out new compatibility issues between different versions of Open edX<br/>
