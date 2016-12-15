@@ -338,7 +338,7 @@ os.system('chmod  777 -R ' + sourceDir+'migrated/' )
 
 for f in files:
     fname = f[sourceDirLen:] #Remove the path from full file name. Now have only file name
-    os.system('tar cfz '+sourceDir+'output/'+fname+' ' + sourceDir+'migrated/'+fname+'/course')
+    os.system('tar cfz '+sourceDir+'output/'+fname+' --directory="' + sourceDir+'migrated/'+fname+'" course')
 
 print 'Created output tar.gaz files under ' +sourceDir+'output/'
 # Give everymody read right so that import command doesn't need sudo right. File is creted with root:root
