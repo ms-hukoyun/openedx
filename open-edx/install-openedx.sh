@@ -29,7 +29,7 @@ git clone $CONFIG_REPO
 cd configuration
 git checkout $OPENEDX_RELEASE
 verify_file_exists "./requirements.txt"
-pip install -r "./requirements.txt"
+pip install -r requirements.txt
 
 cd playbooks
 verify_file_exists "vagrant-${STACK_TYPE}stack.yml"
