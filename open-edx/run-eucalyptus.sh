@@ -16,6 +16,6 @@ if [ $STACK_TYPE != "dev" ] && [ $STACK_TYPE != "full" ]; then
     echo "Exiting script"
 fi
 
-sudo apt-get update -y --fix-missing
-sudo apt-get upgrade -y --fix-missing
+sudo apt-get update --fix-missing
+sudo apt-get upgrade --fix-missing
 sudo bash install-openedx.sh "open-release/eucalyptus.1" $STACK_TYPE | tee /tmp/openedx-install.log
