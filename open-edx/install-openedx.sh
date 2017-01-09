@@ -4,6 +4,7 @@
 
 set -x
 export OPENEDX_RELEASE=$1
+STACK_TYPE=$2
 CONFIG_REPO=https://github.com/edx/configuration.git
 ANSIBLE_ROOT=/edx/app/edx_ansible
 
@@ -27,7 +28,21 @@ git clone $CONFIG_REPO
 
 cd configuration
 git checkout $OPENEDX_RELEASE
-pip install -r requirements.txt
+verify_file_exists "./requirements.txt"
+pip install -r "./requirements.txt"
 
 cd playbooks
-ansible-playbook -i localhost, -c local vagrant-fullstack.yml -e@$ANSIBLE_ROOT/server-vars.yml -e@$ANSIBLE_ROOT/extra-vars.yml
+verify_file_exists "vagrant-${STACK_TYPE}stack.yml"
+verify_file_exists "$ANSIBLE_ROOT/server-vars.yml"
+verify_file_exists "$ANSIBLE_ROOT/extra-vars.yml"
+ansible-playbook -i localhost, -c local vagrant-${STACK_TYPE}stack.yml -e@$ANSIBLE_ROOT/server-vars.yml -e@$ANSIBLE_ROOT/extra-vars.yml
+
+verify_file_exists()
+{
+    PATH=$1
+    if [ -e $PATH ]; then
+        echo "No file exists at path: $PATH"
+        echo "Exiting script"
+        exit
+    fi
+}
