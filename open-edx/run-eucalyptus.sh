@@ -5,8 +5,8 @@
 # Create LXC VM for 12.04.5
 # sudo lxc-create -t download -n myNode -d ubuntu -r precise -a amd64
 
-# Optional parameter specifying fullstack or devstack
-STACK_TYPE=full # full | dev
+# Parameter specifying fullstack or devstack
+STACK_TYPE=full # default to full when not provided.
 if [ ! -z $1 ]; then
     STACK_TYPE=$1
 fi

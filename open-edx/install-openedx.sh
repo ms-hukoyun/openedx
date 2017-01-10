@@ -13,7 +13,26 @@ if [ ! -f "/etc/ssh/sshd_config" ]; then
     sudo apt-get install -y -qq ssh
 fi
 
-wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O- | sudo bash
+verify_file_exists()
+{
+    PATH=$1
+    if [ ! -f $PATH ]; then
+        echo "No file exists at path: $PATH"
+        echo "Exiting script"
+        exit
+    fi
+}
+
+#todo: can we move this to after the file is created?
+pushd ~/tmp #todo
+git clone $CONFIG_REPO
+pushd configuration
+git checkout $OPENEDX_RELEASE
+verify_file_exists "./util/install/ansible-bootstrap.sh"
+exit
+bash util/install/ansible-bootstrap.sh
+popd
+popd
 
 bash -c "cat <<EOF >extra-vars.yml
 ---
@@ -28,26 +47,14 @@ EOF"
 cp *.yml $ANSIBLE_ROOT
 chown edx-ansible:edx-ansible $ANSIBLE_ROOT/*.yml
 
-verify_file_exists()
-{
-    PATH=$1
-    if [ ! -f $PATH ]; then
-        echo "No file exists at path: $PATH"
-        echo "Exiting script"
-        exit
-    fi
-}
-
-cd /tmp
-git clone $CONFIG_REPO
-
-cd configuration
-git checkout $OPENEDX_RELEASE
+pushd ~/tmp/configuration #todo:
 verify_file_exists "./requirements.txt"
 pip install -r requirements.txt
 
-cd playbooks
+pushd playbooks
 verify_file_exists "vagrant-${STACK_TYPE}stack.yml"
 verify_file_exists "$ANSIBLE_ROOT/server-vars.yml"
 verify_file_exists "$ANSIBLE_ROOT/extra-vars.yml"
 ansible-playbook -i localhost, -c local vagrant-${STACK_TYPE}stack.yml -e@$ANSIBLE_ROOT/server-vars.yml -e@$ANSIBLE_ROOT/extra-vars.yml
+popd
+popd
