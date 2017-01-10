@@ -8,6 +8,10 @@ STACK_TYPE=$2
 CONFIG_REPO=https://github.com/edx/configuration.git
 ANSIBLE_ROOT=/edx/app/edx_ansible
 
+if [ ! -f "/etc/ssh/sshd_config" ]; then
+    sudo apt-get install -y -qq ssh
+fi
+
 wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O- | bash
 
 bash -c "cat <<EOF >extra-vars.yml
@@ -23,6 +27,16 @@ EOF"
 cp *.yml $ANSIBLE_ROOT
 chown edx-ansible:edx-ansible $ANSIBLE_ROOT/*.yml
 
+verify_file_exists()
+{
+    PATH=$1
+    if [ ! -f $PATH ]; then
+        echo "No file exists at path: $PATH"
+        echo "Exiting script"
+        exit
+    fi
+}
+
 cd /tmp
 git clone $CONFIG_REPO
 
@@ -37,12 +51,3 @@ verify_file_exists "$ANSIBLE_ROOT/server-vars.yml"
 verify_file_exists "$ANSIBLE_ROOT/extra-vars.yml"
 ansible-playbook -i localhost, -c local vagrant-${STACK_TYPE}stack.yml -e@$ANSIBLE_ROOT/server-vars.yml -e@$ANSIBLE_ROOT/extra-vars.yml
 
-verify_file_exists()
-{
-    PATH=$1
-    if [ -e $PATH ]; then
-        echo "No file exists at path: $PATH"
-        echo "Exiting script"
-        exit
-    fi
-}
