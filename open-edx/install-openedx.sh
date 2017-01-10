@@ -9,6 +9,7 @@ CONFIG_REPO=https://github.com/edx/configuration.git
 ANSIBLE_ROOT=/edx/app/edx_ansible
 
 if [ ! -f "/etc/ssh/sshd_config" ]; then
+    echo "installing ssh..."
     sudo apt-get install -y -qq ssh
 fi
 
