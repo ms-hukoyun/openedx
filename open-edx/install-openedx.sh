@@ -13,7 +13,7 @@ if [ ! -f "/etc/ssh/sshd_config" ]; then
     sudo apt-get install -y -qq ssh
 fi
 
-wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O- | bash
+wget https://raw.githubusercontent.com/edx/configuration/master/util/install/ansible-bootstrap.sh -O- | sudo bash
 
 bash -c "cat <<EOF >extra-vars.yml
 ---
@@ -51,4 +51,3 @@ verify_file_exists "vagrant-${STACK_TYPE}stack.yml"
 verify_file_exists "$ANSIBLE_ROOT/server-vars.yml"
 verify_file_exists "$ANSIBLE_ROOT/extra-vars.yml"
 ansible-playbook -i localhost, -c local vagrant-${STACK_TYPE}stack.yml -e@$ANSIBLE_ROOT/server-vars.yml -e@$ANSIBLE_ROOT/extra-vars.yml
-

@@ -17,7 +17,9 @@ if [ $STACK_TYPE != "dev" ] && [ $STACK_TYPE != "full" ]; then
 fi
 
 echo "updating packages..."
-sudo apt-get update -y -qq --fix-missing
-sudo apt-get upgrade -y -qq --fix-missing
+sudo apt-get update --fix-missing
+sudo apt-get upgrade --fix-missing
 
+script /tmp/openedx-install.all.log
 sudo bash install-openedx.sh "open-release/eucalyptus.1" $STACK_TYPE | tee /tmp/openedx-install.log
+exit
