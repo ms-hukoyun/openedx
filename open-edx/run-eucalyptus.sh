@@ -20,4 +20,4 @@ echo "updating packages..."
 sudo apt-get update -y -qq --fix-missing
 sudo apt-get upgrade -y -qq --fix-missing
 
-sudo bash install-openedx.sh "open-release/eucalyptus.1" $STACK_TYPE | tee /tmp/openedx-install.log
+sudo -H bash install-openedx.sh "open-release/eucalyptus.1" $STACK_TYPE | tee /tmp/openedx-install.log

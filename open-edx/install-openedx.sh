@@ -24,7 +24,7 @@ verify_file_exists()
 }
 
 #todo: can we move this to after the file is created?
-pushd ~/tmp #todo
+pushd /var/tmp
 git clone $CONFIG_REPO
 pushd configuration
 git checkout $OPENEDX_RELEASE
@@ -47,7 +47,7 @@ EOF"
 cp *.yml $ANSIBLE_ROOT
 chown edx-ansible:edx-ansible $ANSIBLE_ROOT/*.yml
 
-pushd ~/tmp/configuration #todo:
+pushd /var/tmp/configuration
 verify_file_exists "./requirements.txt"
 pip install -r requirements.txt
 
