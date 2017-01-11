@@ -3,15 +3,6 @@
 # Licensed under the MIT license. See LICENSE file on the project webpage for details.
 
 set -x
-export OPENEDX_RELEASE=$1
-STACK_TYPE=$2
-CONFIG_REPO=https://github.com/edx/configuration.git
-ANSIBLE_ROOT=/edx/app/edx_ansible
-
-if [ ! -f "/etc/ssh/sshd_config" ]; then
-    echo "installing ssh..."
-    sudo apt-get install -y -qq ssh
-fi
 
 verify_file_exists()
 {
@@ -23,7 +14,16 @@ verify_file_exists()
     fi
 }
 
-#todo: can we move this to after the file is created?
+export OPENEDX_RELEASE=$1
+STACK_TYPE=$2
+CONFIG_REPO=https://github.com/edx/configuration.git
+ANSIBLE_ROOT=/edx/app/edx_ansible
+
+if [ ! -f "/etc/ssh/sshd_config" ]; then
+    echo "installing ssh..."
+    sudo apt-get install -y -qq ssh
+fi
+
 pushd /var/tmp
 git clone $CONFIG_REPO
 pushd configuration
