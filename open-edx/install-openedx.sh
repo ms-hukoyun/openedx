@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All Rights Reserved.
 # Licensed under the MIT license. See LICENSE file on the project webpage for details.
 
-#set -x
+set -x
 export OPENEDX_RELEASE=$1
 STACK_TYPE=$2
 CONFIG_REPO=https://github.com/edx/configuration.git
@@ -27,7 +27,6 @@ verify_file_exists()
 pushd /var/tmp
 git clone $CONFIG_REPO
 pushd configuration
-git checkout $OPENEDX_RELEASE
 verify_file_exists "./util/install/ansible-bootstrap.sh"
 bash util/install/ansible-bootstrap.sh
 popd
@@ -47,6 +46,7 @@ cp *.yml $ANSIBLE_ROOT
 chown edx-ansible:edx-ansible $ANSIBLE_ROOT/*.yml
 
 pushd /var/tmp/configuration
+git checkout $OPENEDX_RELEASE
 verify_file_exists "./requirements.txt"
 pip install -r requirements.txt
 
