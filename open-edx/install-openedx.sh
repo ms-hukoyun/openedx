@@ -4,6 +4,14 @@
 
 set -x
 
+verify_stack_type() {
+    # Restrict to supported values.
+    if [ $STACK_TYPE != "dev" ] && [ $STACK_TYPE != "full" ]; then
+        echo "Please specify fullstack or devstack (with argument full or dev)"
+        echo "Exiting script"
+        exit 1
+    fi
+}
 verify_file_exists()
 {
     FILE_PATH=$1
@@ -21,6 +29,7 @@ verify_hkp_service()
         echo "Please change EDX_PPA_KEY_SERVER to hkp://pgp.mit.edu:80 in"
         pwd
         echo "/util/install/ansible-bootstrap.sh"
+        echo "Exiting script"
         exit 5
     fi
 }
@@ -33,7 +42,8 @@ verify_ssh()
 }
 
 export OPENEDX_RELEASE=$1
-STACK_TYPE=$2
+STACK_TYPE=$2 # dev | full
+verify_stack_type
 
 export CONFIGURATION_VERSION=$1
 CONFIG_FOLDER=configuration
@@ -41,7 +51,7 @@ CONFIG_ORG=edx
 # Note: if we need to make a change to ansible-bootstrap.sh or requirements.txt then we'll make it in our fork.
 if [ ! -z $3 ]; then
     echo "Use Microsoft's fork for ansible-bootstrap.sh and requirements.txt"
-    export CONFIGURATION_VERSION=oxa/master
+    CONFIGURATION_VERSION=oxa/master
     CONFIG_FOLDER=edx-configuration
     CONFIG_ORG=Microsoft
 fi
