@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All Rights Reserved.
 # Licensed under the MIT license. See LICENSE file on the project webpage for details.
 
-set -x
+#set -x
 export OPENEDX_RELEASE=$1
 STACK_TYPE=$2
 CONFIG_REPO=https://github.com/edx/configuration.git
@@ -15,9 +15,9 @@ fi
 
 verify_file_exists()
 {
-    PATH=$1
-    if [ ! -f $PATH ]; then
-        echo "No file exists at path: $PATH"
+    FILE_PATH=$1
+    if [ ! -f $FILE_PATH ]; then
+        echo "No file exists at path: $FILE_PATH"
         echo "Exiting script"
         exit
     fi
@@ -29,7 +29,6 @@ git clone $CONFIG_REPO
 pushd configuration
 git checkout $OPENEDX_RELEASE
 verify_file_exists "./util/install/ansible-bootstrap.sh"
-exit
 bash util/install/ansible-bootstrap.sh
 popd
 popd
