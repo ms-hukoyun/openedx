@@ -10,32 +10,59 @@ verify_file_exists()
     if [ ! -f $FILE_PATH ]; then
         echo "No file exists at path: $FILE_PATH"
         echo "Exiting script"
-        exit
+        exit 3
+    fi
+}
+verify_hkp_service()
+{
+    sudo apt-key adv --keyserver "pgp.mit.edu" --recv-keys 69464050
+    if [ $? -ne 0 ]; then
+        echo "Port 11371 is blocked"
+        echo "Please change EDX_PPA_KEY_SERVER to hkp://pgp.mit.edu:80 in"
+        pwd
+        echo "/util/install/ansible-bootstrap.sh"
+        exit 5
+    fi
+}
+verify_ssh()
+{
+    if [ ! -f "/etc/ssh/sshd_config" ]; then
+        echo "installing ssh..."
+        sudo apt-get install -y -qq ssh
     fi
 }
 
 export OPENEDX_RELEASE=$1
 STACK_TYPE=$2
-# Note: if we need to make a change then make it in our fork. Change the following values
-# Note: also, see the note below
-export CONFIGURATION_VERSION=$1 # oxa/master
-CONFIG_FOLDER=configuration # edx-configuration
-CONFIG_ORG=edx # Microsoft
+
+export CONFIGURATION_VERSION=$1
+CONFIG_FOLDER=configuration
+CONFIG_ORG=edx
+# Note: if we need to make a change to ansible-bootstrap.sh or requirements.txt then we'll make it in our fork.
+if [ ! -z $3 ]; then
+    echo "Use Microsoft's fork for ansible-bootstrap.sh and requirements.txt"
+    export CONFIGURATION_VERSION=oxa/master
+    CONFIG_FOLDER=edx-configuration
+    CONFIG_ORG=Microsoft
+fi
+
 CONFIG_REPO=https://github.com/$CONFIG_ORG/$CONFIG_FOLDER.git
 ANSIBLE_ROOT=/edx/app/edx_ansible
 TEMP_DIR=/var/tmp
 
-if [ ! -f "/etc/ssh/sshd_config" ]; then
-    echo "installing ssh..."
-    sudo apt-get install -y -qq ssh
-fi
+verify_ssh
 
 pushd $TEMP_DIR
 git clone $CONFIG_REPO
 pushd $CONFIG_FOLDER
 git checkout $CONFIGURATION_VERSION
 verify_file_exists "./util/install/ansible-bootstrap.sh"
+verify_hkp_service
 bash util/install/ansible-bootstrap.sh
+if [ $? -ne 0 ]; then
+    echo "ansible-bootstrap.sh script failed"
+    exit 7
+fi
 popd
 popd
 
@@ -53,9 +80,11 @@ cp *.yml $ANSIBLE_ROOT
 chown edx-ansible:edx-ansible $ANSIBLE_ROOT/*.yml
 
 pushd $TEMP_DIR/$CONFIG_FOLDER
-# Note: See note above. This will work for dogwood and eucalyptus
-# Note: Enable this checkout if you are using our fork. This is required until get all the latest branches from the upstream.
-#git checkout open-release/eucalyptus/master
+# This is required until we get all the latest branches from the upstream and/or merge latest changes into oxa/master
+if [ ! -z $3 ]; then
+    # This will work for dogwood and eucalyptus
+    git checkout open-release/eucalyptus/master
+fi
 verify_file_exists "./requirements.txt"
 pip install -r requirements.txt
 
