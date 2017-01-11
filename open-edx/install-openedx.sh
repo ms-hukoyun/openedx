@@ -16,18 +16,24 @@ verify_file_exists()
 
 export OPENEDX_RELEASE=$1
 STACK_TYPE=$2
-CONFIG_REPO=https://github.com/edx/configuration.git
+# Note: if we need to make a change then make it in our fork. Change the following values
+# Note: also, see the note below
+export CONFIGURATION_VERSION=$1 # oxa/master
+CONFIG_FOLDER=configuration # edx-configuration
+CONFIG_ORG=edx # Microsoft
+CONFIG_REPO=https://github.com/$CONFIG_ORG/$CONFIG_FOLDER.git
 ANSIBLE_ROOT=/edx/app/edx_ansible
+TEMP_DIR=/var/tmp
 
 if [ ! -f "/etc/ssh/sshd_config" ]; then
     echo "installing ssh..."
     sudo apt-get install -y -qq ssh
 fi
 
-pushd /var/tmp
+pushd $TEMP_DIR
 git clone $CONFIG_REPO
-pushd configuration
-git checkout named-release/dogwood.rc
+pushd $CONFIG_FOLDER
+git checkout $CONFIGURATION_VERSION
 verify_file_exists "./util/install/ansible-bootstrap.sh"
 bash util/install/ansible-bootstrap.sh
 popd
@@ -46,8 +52,10 @@ EOF"
 cp *.yml $ANSIBLE_ROOT
 chown edx-ansible:edx-ansible $ANSIBLE_ROOT/*.yml
 
-pushd /var/tmp/configuration
-git checkout $OPENEDX_RELEASE
+pushd $TEMP_DIR/$CONFIG_FOLDER
+# Note: See note above. This will work for dogwood and eucalyptus
+# Note: Enable this checkout if you are using our fork. This is required until get all the latest branches from the upstream.
+#git checkout open-release/eucalyptus/master
 verify_file_exists "./requirements.txt"
 pip install -r requirements.txt
 
