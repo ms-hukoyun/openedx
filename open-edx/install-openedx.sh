@@ -27,6 +27,7 @@ fi
 pushd /var/tmp
 git clone $CONFIG_REPO
 pushd configuration
+git checkout named-release/dogwood.rc
 verify_file_exists "./util/install/ansible-bootstrap.sh"
 bash util/install/ansible-bootstrap.sh
 popd
