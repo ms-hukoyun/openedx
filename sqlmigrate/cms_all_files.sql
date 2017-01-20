@@ -1,9 +1,16 @@
 BEGIN;
 ALTER TABLE `microsite_configuration_micrositehistory` DROP FOREIGN KEY `microsite_configurati_site_id_6977a04d3625a533_fk_django_site_id`;
 ALTER TABLE `microsite_configuration_micrositehistory` ADD CONSTRAINT `microsite_configurati_site_id_6977a04d3625a533_fk_django_site_id` FOREIGN KEY (`site_id`) REFERENCES `django_site` (`id`);
-
 COMMIT;
+
 BEGIN;
+ALTER TABLE `milestones_coursemilestone` ALTER COLUMN `milestone_id` DROP DEFAULT;
+ALTER TABLE `milestones_coursemilestone` ALTER COLUMN `milestone_relationship_type_id` DROP DEFAULT;
+ALTER TABLE `milestones_coursecontentmilestone` ALTER COLUMN `milestone_id` DROP DEFAULT;
+ALTER TABLE `milestones_coursecontentmilestone` ALTER COLUMN `milestone_relationship_type_id` DROP DEFAULT;
+COMMIT;
+
+/*BEGIN;
 --CREATE TABLE `milestones_coursecontentmilestone` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `created` datetime(6) NOT NULL, `modified` datetime(6) NOT NULL, `course_id` varchar(255) NOT NULL, `content_id` varchar(255) NOT NULL, `active` bool NOT NULL);
 --CREATE TABLE `milestones_coursemilestone` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `created` datetime(6) NOT NULL, `modified` datetime(6) NOT NULL, `course_id` varchar(255) NOT NULL, `active` bool NOT NULL);
 --CREATE TABLE `milestones_milestone` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `created` datetime(6) NOT NULL, `modified` datetime(6) NOT NULL, `namespace` varchar(255) NOT NULL, `name` varchar(255) NOT NULL, `display_name` varchar(255) NOT NULL, `description` longtext NOT NULL, `active` bool NOT NULL);
@@ -11,13 +18,13 @@ BEGIN;
 --CREATE TABLE `milestones_usermilestone` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `created` datetime(6) NOT NULL, `modified` datetime(6) NOT NULL, `user_id` integer NOT NULL, `source` longtext NOT NULL, `collected` datetime(6) NULL, `active` bool NOT NULL, `milestone_id` integer NOT NULL);
 --ALTER TABLE `milestones_milestone` ADD CONSTRAINT `milestones_milestone_namespace_460a2f6943016c0b_uniq` UNIQUE (`namespace`, `name`);
 --ALTER TABLE `milestones_coursemilestone` ADD COLUMN `milestone_id` integer NOT NULL;
-ALTER TABLE `milestones_coursemilestone` ALTER COLUMN `milestone_id` DROP DEFAULT;
+
 --ALTER TABLE `milestones_coursemilestone` ADD COLUMN `milestone_relationship_type_id` integer NOT NULL;
-ALTER TABLE `milestones_coursemilestone` ALTER COLUMN `milestone_relationship_type_id` DROP DEFAULT;
+
 --ALTER TABLE `milestones_coursecontentmilestone` ADD COLUMN `milestone_id` integer NOT NULL;
-ALTER TABLE `milestones_coursecontentmilestone` ALTER COLUMN `milestone_id` DROP DEFAULT;
+
 --ALTER TABLE `milestones_coursecontentmilestone` ADD COLUMN `milestone_relationship_type_id` integer NOT NULL;
-ALTER TABLE `milestones_coursecontentmilestone` ALTER COLUMN `milestone_relationship_type_id` DROP DEFAULT;
+
 --ALTER TABLE `milestones_usermilestone` ADD CONSTRAINT `milestones_usermilestone_user_id_10206aa452468351_uniq` UNIQUE (`user_id`, `milestone_id`);
 --ALTER TABLE `milestones_coursemilestone` ADD CONSTRAINT `milestones_coursemilestone_course_id_5a06e10579eab3b7_uniq` UNIQUE (`course_id`, `milestone_id`);
 --ALTER TABLE `milestones_coursecontentmilestone` ADD CONSTRAINT `milestones_coursecontentmileston_course_id_68d1457cd52d6dff_uniq` UNIQUE (`course_id`, `content_id`, `milestone_id`);
@@ -36,16 +43,16 @@ ALTER TABLE `milestones_coursecontentmilestone` ALTER COLUMN `milestone_relation
 --ALTER TABLE `milestones_coursecontentmilestone` ADD CONSTRAINT `milesto_milestone_id_73b6eddde5b205a8_fk_milestones_milestone_id` FOREIGN KEY (`milestone_id`) REFERENCES `milestones_milestone` (`id`);
 --CREATE INDEX `milestones_coursecontentmilestone_db6866e3` ON `milestones_coursecontentmilestone` (`milestone_relationship_type_id`);
 --ALTER TABLE `milestones_coursecontentmilestone` ADD CONSTRAINT `D84e404851bc6d6b9fe0d60955e8729c` FOREIGN KEY (`milestone_relationship_type_id`) REFERENCES `milestones_milestonerelationshiptype` (`id`);
-COMMIT;
-BEGIN;
+COMMIT;*/
+
+/*BEGIN;
 --
 -- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE WRITTEN AS SQL:
 -- Raw Python operation
 --
-
-COMMIT;
+COMMIT;*/
 BEGIN;
---ALTER TABLE `milestones_coursecontentmilestone` ADD COLUMN `requirements` varchar(255) NULL;
+/*ALTER TABLE `milestones_coursecontentmilestone` ADD COLUMN `requirements` varchar(255) NULL;*/
 ALTER TABLE `milestones_coursecontentmilestone` ALTER COLUMN `requirements` DROP DEFAULT;
 
 COMMIT;
@@ -68,7 +75,7 @@ ALTER TABLE `oauth2_refreshtoken` ADD CONSTRAINT `oauth2_refreshtoken_user_id_ac
 
 COMMIT;
 BEGIN;
---ALTER TABLE `oauth2_client` ADD COLUMN `logout_uri` varchar(200) NULL;
+/*ALTER TABLE `oauth2_client` ADD COLUMN `logout_uri` varchar(200) NULL;*/
 ALTER TABLE `oauth2_client` ALTER COLUMN `logout_uri` DROP DEFAULT;
 
 COMMIT;
@@ -94,7 +101,7 @@ COMMIT;
 */
 
 BEGIN;
---ALTER TABLE `oauth2_provider_application` ADD COLUMN `skip_authorization` bool DEFAULT 0 NOT NULL;
+/*ALTER TABLE `oauth2_provider_application` ADD COLUMN `skip_authorization` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `oauth2_provider_application` ALTER COLUMN `skip_authorization` DROP DEFAULT;
 ALTER TABLE `oauth2_provider_application` DROP FOREIGN KEY `oauth2_provider_applica_user_id_7fa13387c260b798_fk_auth_user_id`;
 ALTER TABLE `oauth2_provider_application` ADD CONSTRAINT `oauth2_provider_applica_user_id_7fa13387c260b798_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
@@ -123,16 +130,16 @@ COMMIT;
 */
 
 BEGIN;
---ALTER TABLE `programs_programsapiconfig` ADD COLUMN `cache_ttl` integer UNSIGNED DEFAULT 0 NOT NULL;
+/*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `cache_ttl` integer UNSIGNED DEFAULT 0 NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `cache_ttl` DROP DEFAULT;
 COMMIT;
 
 BEGIN;
---ALTER TABLE `programs_programsapiconfig` ADD COLUMN `authoring_app_css_path` varchar(255) DEFAULT  NOT NULL;
+/*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `authoring_app_css_path` varchar(255) DEFAULT  NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `authoring_app_css_path` DROP DEFAULT;
---ALTER TABLE `programs_programsapiconfig` ADD COLUMN `authoring_app_js_path` varchar(255) DEFAULT  NOT NULL;
+/*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `authoring_app_js_path` varchar(255) DEFAULT  NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `authoring_app_js_path` DROP DEFAULT;
---ALTER TABLE `programs_programsapiconfig` ADD COLUMN `enable_studio_tab` bool DEFAULT 0 NOT NULL;
+/*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `enable_studio_tab` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `enable_studio_tab` DROP DEFAULT;
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `enable_student_dashboard` SET DEFAULT 0;
 UPDATE `programs_programsapiconfig` SET `enable_student_dashboard` = 0 WHERE `enable_student_dashboard` IS NULL;
@@ -141,17 +148,17 @@ ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `enable_student_dashboard`
 COMMIT;
 
 BEGIN;
---ALTER TABLE `programs_programsapiconfig` ADD COLUMN `enable_certification` bool DEFAULT 0 NOT NULL;
+/*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `enable_certification` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `enable_certification` DROP DEFAULT;
 
 COMMIT;
 BEGIN;
---ALTER TABLE `programs_programsapiconfig` ADD COLUMN `max_retries` integer UNSIGNED DEFAULT 11 NOT NULL;
+/*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `max_retries` integer UNSIGNED DEFAULT 11 NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `max_retries` DROP DEFAULT;
 
 COMMIT;
 BEGIN;
---ALTER TABLE `programs_programsapiconfig` ADD COLUMN `xseries_ad_enabled` bool DEFAULT 0 NOT NULL;
+/*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `xseries_ad_enabled` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `xseries_ad_enabled` DROP DEFAULT;
 
 COMMIT;
@@ -161,7 +168,7 @@ ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `program_listing_enabled` 
 
 COMMIT;
 BEGIN;
---ALTER TABLE `programs_programsapiconfig` ADD COLUMN `program_details_enabled` bool DEFAULT 0 NOT NULL;
+/*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `program_details_enabled` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `program_details_enabled` DROP DEFAULT;
 COMMIT;
 
@@ -415,9 +422,9 @@ COMMIT;
 */
 
 BEGIN;
---ALTER TABLE `site_configuration_siteconfiguration` ADD COLUMN `enabled` bool DEFAULT 0 NOT NULL;
+/*ALTER TABLE `site_configuration_siteconfiguration` ADD COLUMN `enabled` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `site_configuration_siteconfiguration` ALTER COLUMN `enabled` DROP DEFAULT;
---ALTER TABLE `site_configuration_siteconfigurationhistory` ADD COLUMN `enabled` bool DEFAULT 0 NOT NULL;
+/*ALTER TABLE `site_configuration_siteconfigurationhistory` ADD COLUMN `enabled` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `site_configuration_siteconfigurationhistory` ALTER COLUMN `enabled` DROP DEFAULT;
 COMMIT;
 
@@ -526,7 +533,7 @@ COMMIT;
 */
 
 BEGIN;
---ALTER TABLE `submissions_submission` ADD COLUMN `status` varchar(1) DEFAULT 'A' NOT NULL;
+/*ALTER TABLE `submissions_submission` ADD COLUMN `status` varchar(1) DEFAULT 'A' NOT NULL;*/
 ALTER TABLE `submissions_submission` ALTER COLUMN `status` DROP DEFAULT;
 COMMIT;
 
@@ -616,9 +623,9 @@ COMMIT;
 */
 
 BEGIN;
---ALTER TABLE `verify_student_historicalverificationdeadline` ADD COLUMN `deadline_is_explicit` bool DEFAULT 1 NOT NULL;
+/*ALTER TABLE `verify_student_historicalverificationdeadline` ADD COLUMN `deadline_is_explicit` bool DEFAULT 1 NOT NULL;*/
 ALTER TABLE `verify_student_historicalverificationdeadline` ALTER COLUMN `deadline_is_explicit` DROP DEFAULT;
---ALTER TABLE `verify_student_verificationdeadline` ADD COLUMN `deadline_is_explicit` bool DEFAULT 1 NOT NULL;
+/*ALTER TABLE `verify_student_verificationdeadline` ADD COLUMN `deadline_is_explicit` bool DEFAULT 1 NOT NULL;*/
 ALTER TABLE `verify_student_verificationdeadline` ALTER COLUMN `deadline_is_explicit` DROP DEFAULT;
 COMMIT;
 
@@ -803,7 +810,7 @@ COMMIT;
 */
 
 BEGIN;
---ALTER TABLE `course_modes_coursemode` ADD COLUMN `expiration_datetime_is_explicit` bool DEFAULT 1 NOT NULL;
+/*ALTER TABLE `course_modes_coursemode` ADD COLUMN `expiration_datetime_is_explicit` bool DEFAULT 1 NOT NULL;*/
 ALTER TABLE `course_modes_coursemode` ALTER COLUMN `expiration_datetime_is_explicit` DROP DEFAULT;
 COMMIT;
 
@@ -1098,7 +1105,7 @@ COMMIT;
 */
 
 BEGIN;
---ALTER TABLE `proctoring_proctoredexamstudentattempt` ADD COLUMN `is_status_acknowledged` bool DEFAULT 0 NOT NULL;
+/*ALTER TABLE `proctoring_proctoredexamstudentattempt` ADD COLUMN `is_status_acknowledged` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `proctoring_proctoredexamstudentattempt` ALTER COLUMN `is_status_acknowledged` DROP DEFAULT;
 COMMIT;
 
@@ -1109,7 +1116,7 @@ COMMIT;
 */
 
 BEGIN;
---ALTER TABLE `proctoring_proctoredexam` ADD COLUMN `hide_after_due` bool DEFAULT 0 NOT NULL;
+/*ALTER TABLE `proctoring_proctoredexam` ADD COLUMN `hide_after_due` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `proctoring_proctoredexam` ALTER COLUMN `hide_after_due` DROP DEFAULT;
 COMMIT;
 

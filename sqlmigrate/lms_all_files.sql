@@ -16,13 +16,14 @@ CREATE INDEX `badges_badgeassertion_e8701ad4` ON `badges_badgeassertion` (`user_
 ALTER TABLE `badges_badgeassertion` ADD CONSTRAINT `badges_badgeassertion_user_id_14233cdefee1055a_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 
 COMMIT;
---BEGIN;
+/*--BEGIN;
 --
 -- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE WRITTEN AS SQL:
 -- Raw Python operation
 --
 
---COMMIT;
+--COMMIT;*/
+
 BEGIN;
 CREATE TABLE `badges_courseeventbadgesconfiguration` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `change_date` datetime(6) NOT NULL, `enabled` bool NOT NULL, `courses_completed` longtext NOT NULL, `courses_enrolled` longtext NOT NULL, `course_groups` longtext NOT NULL, `changed_by_id` integer NULL);
 ALTER TABLE `badges_courseeventbadgesconfiguration` ADD CONSTRAINT `badges_courseeven_changed_by_id_50986a94d73238b9_fk_auth_user_id` FOREIGN KEY (`changed_by_id`) REFERENCES `auth_user` (`id`);
@@ -57,13 +58,14 @@ ALTER TABLE `bulk_email_courseemail_targets` ADD CONSTRAINT `bul_courseemail_id_
 ALTER TABLE `bulk_email_courseemail_targets` ADD CONSTRAINT `bulk_email_co_target_id_6cdcd92a52b1f9d9_fk_bulk_email_target_id` FOREIGN KEY (`target_id`) REFERENCES `bulk_email_target` (`id`);
 
 COMMIT;
---BEGIN;
+/*--BEGIN;
 --
 -- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE WRITTEN AS SQL:
 -- Raw Python operation
 --
 
---COMMIT;
+--COMMIT;*/
+
 BEGIN;
 CREATE TABLE `commerce_commerceconfiguration` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `change_date` datetime(6) NOT NULL, `enabled` bool NOT NULL, `checkout_on_ecommerce_service` bool NOT NULL, `single_course_checkout_page` varchar(255) NOT NULL, `changed_by_id` integer NULL);
 ALTER TABLE `commerce_commerceconfiguration` ADD CONSTRAINT `commerce_commerce_changed_by_id_7441951d1c97c1d7_fk_auth_user_id` FOREIGN KEY (`changed_by_id`) REFERENCES `auth_user` (`id`);
@@ -110,7 +112,7 @@ CREATE TABLE `course_overviews_courseoverviewimageconfig` (`id` integer AUTO_INC
 ALTER TABLE `course_overviews_courseoverviewimageconfig` ADD CONSTRAINT `course_overviews__changed_by_id_54b19ba1c134af6a_fk_auth_user_id` FOREIGN KEY (`changed_by_id`) REFERENCES `auth_user` (`id`);
 
 COMMIT;
---BEGIN;
+/*--BEGIN;
 --ALTER TABLE `course_overviews_courseoverview` ADD COLUMN `facebook_url` longtext NULL;
 
 --COMMIT;
@@ -120,9 +122,9 @@ COMMIT;
 -- Raw Python operation
 --
 
---COMMIT;
+--COMMIT;*/
 BEGIN;
---ALTER TABLE `course_overviews_courseoverview` DROP COLUMN `facebook_url` CASCADE;
+/*--ALTER TABLE `course_overviews_courseoverview` DROP COLUMN `facebook_url` CASCADE;*/
 ALTER TABLE `course_overviews_courseoverview` ADD COLUMN `self_paced` bool DEFAULT 0 NOT NULL;
 ALTER TABLE `course_overviews_courseoverview` ALTER COLUMN `self_paced` DROP DEFAULT;
 
@@ -132,13 +134,12 @@ CREATE TABLE `coursetalk_coursetalkwidgetconfiguration` (`id` integer AUTO_INCRE
 ALTER TABLE `coursetalk_coursetalkwidgetconfiguration` ADD CONSTRAINT `coursetalk_course_changed_by_id_18bd24020c1b37d5_fk_auth_user_id` FOREIGN KEY (`changed_by_id`) REFERENCES `auth_user` (`id`);
 
 COMMIT;
-BEGIN;
+/*BEGIN;
 --
 -- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE WRITTEN AS SQL:
 -- Raw Python operation
 --
-
-COMMIT;
+COMMIT;*/
 BEGIN;
 CREATE TABLE `credentials_credentialsapiconfig` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `change_date` datetime(6) NOT NULL, `enabled` bool NOT NULL, `internal_service_url` varchar(200) NOT NULL, `public_service_url` varchar(200) NOT NULL, `enable_learner_issuance` bool NOT NULL, `enable_studio_authoring` bool NOT NULL, `cache_ttl` integer UNSIGNED NOT NULL, `changed_by_id` integer NULL);
 ALTER TABLE `credentials_credentialsapiconfig` ADD CONSTRAINT `credentials_crede_changed_by_id_273a2e6b0649c861_fk_auth_user_id` FOREIGN KEY (`changed_by_id`) REFERENCES `auth_user` (`id`);
@@ -170,11 +171,12 @@ ALTER TABLE `api_admin_apiaccessrequest` ADD CONSTRAINT `api_admin_apiaccessrequ
 ALTER TABLE `api_admin_apiaccessconfig` ADD CONSTRAINT `api_admin_apiacce_changed_by_id_771a504ee92a076c_fk_auth_user_id` FOREIGN KEY (`changed_by_id`) REFERENCES `auth_user` (`id`);
 
 COMMIT;
-BEGIN;
+
+/*BEGIN;
 --CREATE TABLE `oauth2_provider_trustedclient` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `client_id` integer NOT NULL);
 --ALTER TABLE `oauth2_provider_trustedclient` ADD CONSTRAINT `oauth2_provider_tr_client_id_bb96ea0be42c00a_fk_oauth2_client_id` FOREIGN KEY (`client_id`) REFERENCES `oauth2_client` (`id`);
+COMMIT;*/
 
-COMMIT;
 BEGIN;
 ALTER TABLE `proctoring_proctoredexamstudentattempt` ADD COLUMN `is_status_acknowledged` bool DEFAULT 0 NOT NULL;
 ALTER TABLE `proctoring_proctoredexamstudentattempt` ALTER COLUMN `is_status_acknowledged` DROP DEFAULT;
