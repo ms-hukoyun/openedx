@@ -16,18 +16,18 @@ CREATE INDEX `badges_badgeassertion_e8701ad4` ON `badges_badgeassertion` (`user_
 ALTER TABLE `badges_badgeassertion` ADD CONSTRAINT `badges_badgeassertion_user_id_14233cdefee1055a_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 
 COMMIT;
-BEGIN;
+--BEGIN;
 --
 -- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE WRITTEN AS SQL:
 -- Raw Python operation
 --
 
-COMMIT;
+--COMMIT;
 BEGIN;
 CREATE TABLE `badges_courseeventbadgesconfiguration` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `change_date` datetime(6) NOT NULL, `enabled` bool NOT NULL, `courses_completed` longtext NOT NULL, `courses_enrolled` longtext NOT NULL, `course_groups` longtext NOT NULL, `changed_by_id` integer NULL);
 ALTER TABLE `badges_courseeventbadgesconfiguration` ADD CONSTRAINT `badges_courseeven_changed_by_id_50986a94d73238b9_fk_auth_user_id` FOREIGN KEY (`changed_by_id`) REFERENCES `auth_user` (`id`);
-
 COMMIT;
+
 BEGIN;
 CREATE TABLE `bookmarks_bookmark` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `created` datetime(6) NOT NULL, `modified` datetime(6) NOT NULL, `course_key` varchar(255) NOT NULL, `usage_key` varchar(255) NOT NULL, `path` longtext NOT NULL, `user_id` integer NOT NULL);
 CREATE TABLE `bookmarks_xblockcache` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `created` datetime(6) NOT NULL, `modified` datetime(6) NOT NULL, `course_key` varchar(255) NOT NULL, `usage_key` varchar(255) NOT NULL UNIQUE, `display_name` varchar(255) NOT NULL, `paths` longtext NOT NULL);
@@ -57,13 +57,13 @@ ALTER TABLE `bulk_email_courseemail_targets` ADD CONSTRAINT `bul_courseemail_id_
 ALTER TABLE `bulk_email_courseemail_targets` ADD CONSTRAINT `bulk_email_co_target_id_6cdcd92a52b1f9d9_fk_bulk_email_target_id` FOREIGN KEY (`target_id`) REFERENCES `bulk_email_target` (`id`);
 
 COMMIT;
-BEGIN;
+--BEGIN;
 --
 -- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE WRITTEN AS SQL:
 -- Raw Python operation
 --
 
-COMMIT;
+--COMMIT;
 BEGIN;
 CREATE TABLE `commerce_commerceconfiguration` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `change_date` datetime(6) NOT NULL, `enabled` bool NOT NULL, `checkout_on_ecommerce_service` bool NOT NULL, `single_course_checkout_page` varchar(255) NOT NULL, `changed_by_id` integer NULL);
 ALTER TABLE `commerce_commerceconfiguration` ADD CONSTRAINT `commerce_commerce_changed_by_id_7441951d1c97c1d7_fk_auth_user_id` FOREIGN KEY (`changed_by_id`) REFERENCES `auth_user` (`id`);
@@ -110,19 +110,19 @@ CREATE TABLE `course_overviews_courseoverviewimageconfig` (`id` integer AUTO_INC
 ALTER TABLE `course_overviews_courseoverviewimageconfig` ADD CONSTRAINT `course_overviews__changed_by_id_54b19ba1c134af6a_fk_auth_user_id` FOREIGN KEY (`changed_by_id`) REFERENCES `auth_user` (`id`);
 
 COMMIT;
-BEGIN;
-ALTER TABLE `course_overviews_courseoverview` ADD COLUMN `facebook_url` longtext NULL;
+--BEGIN;
+--ALTER TABLE `course_overviews_courseoverview` ADD COLUMN `facebook_url` longtext NULL;
 
-COMMIT;
-BEGIN;
+--COMMIT;
+--BEGIN;
 --
 -- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE WRITTEN AS SQL:
 -- Raw Python operation
 --
 
-COMMIT;
+--COMMIT;
 BEGIN;
-ALTER TABLE `course_overviews_courseoverview` DROP COLUMN `facebook_url` CASCADE;
+--ALTER TABLE `course_overviews_courseoverview` DROP COLUMN `facebook_url` CASCADE;
 ALTER TABLE `course_overviews_courseoverview` ADD COLUMN `self_paced` bool DEFAULT 0 NOT NULL;
 ALTER TABLE `course_overviews_courseoverview` ALTER COLUMN `self_paced` DROP DEFAULT;
 
@@ -171,8 +171,8 @@ ALTER TABLE `api_admin_apiaccessconfig` ADD CONSTRAINT `api_admin_apiacce_change
 
 COMMIT;
 BEGIN;
-CREATE TABLE `oauth2_provider_trustedclient` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `client_id` integer NOT NULL);
-ALTER TABLE `oauth2_provider_trustedclient` ADD CONSTRAINT `oauth2_provider_tr_client_id_bb96ea0be42c00a_fk_oauth2_client_id` FOREIGN KEY (`client_id`) REFERENCES `oauth2_client` (`id`);
+--CREATE TABLE `oauth2_provider_trustedclient` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `client_id` integer NOT NULL);
+--ALTER TABLE `oauth2_provider_trustedclient` ADD CONSTRAINT `oauth2_provider_tr_client_id_bb96ea0be42c00a_fk_oauth2_client_id` FOREIGN KEY (`client_id`) REFERENCES `oauth2_client` (`id`);
 
 COMMIT;
 BEGIN;
@@ -197,27 +197,15 @@ ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD CONSTRAINT `email_
 COMMIT;
 
 BEGIN;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_abandoned_cart_delay` integer DEFAULT 60 NOT NULL;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_abandoned_cart_delay` DROP DEFAULT;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_abandoned_cart_template` varchar(20) DEFAULT  NOT NULL;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_abandoned_cart_template` DROP DEFAULT;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_content_cache_age` integer DEFAULT 3600 NOT NULL;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_content_cache_age` DROP DEFAULT;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_enroll_cost` integer DEFAULT 100 NOT NULL;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_enroll_cost` DROP DEFAULT;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_enroll_template` varchar(20) DEFAULT  NOT NULL;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_enroll_template` DROP DEFAULT;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_get_tags_from_sailthru` bool DEFAULT 1 NOT NULL;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_get_tags_from_sailthru` DROP DEFAULT;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_purchase_template` varchar(20) DEFAULT  NOT NULL;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_purchase_template` DROP DEFAULT;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_upgrade_template` varchar(20) DEFAULT  NOT NULL;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_upgrade_template` DROP DEFAULT;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_activation_template` SET DEFAULT ;
-ALTER TABLE `email_marketing_emailmarketingconfiguration` ALTER COLUMN `sailthru_activation_template` DROP DEFAULT;
-
+ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_abandoned_cart_delay` integer NOT NULL;
+ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_abandoned_cart_template` varchar(20) NOT NULL;
+ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_content_cache_age` integer NOT NULL;
+ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_enroll_cost` integer NOT NULL;
+ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_enroll_template` varchar(20) NOT NULL;
+ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_get_tags_from_sailthru` bool NOT NULL;
+ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_purchase_template` varchar(20) NOT NULL;
+ALTER TABLE `email_marketing_emailmarketingconfiguration` ADD COLUMN `sailthru_upgrade_template` varchar(20) NOT NULL;
 COMMIT;
-
 
 
 BEGIN;
@@ -433,14 +421,11 @@ ALTER TABLE `theming_sitetheme` ADD CONSTRAINT `theming_sitetheme_site_id_4fccda
 
 COMMIT;
 BEGIN;
-ALTER TABLE `third_party_auth_ltiproviderconfig` ADD COLUMN `icon_image` varchar(100) DEFAULT  NOT NULL;
-ALTER TABLE `third_party_auth_ltiproviderconfig` ALTER COLUMN `icon_image` DROP DEFAULT;
-ALTER TABLE `third_party_auth_oauth2providerconfig` ADD COLUMN `icon_image` varchar(100) DEFAULT  NOT NULL;
-ALTER TABLE `third_party_auth_oauth2providerconfig` ALTER COLUMN `icon_image` DROP DEFAULT;
-ALTER TABLE `third_party_auth_samlproviderconfig` ADD COLUMN `icon_image` varchar(100) DEFAULT  NOT NULL;
-ALTER TABLE `third_party_auth_samlproviderconfig` ALTER COLUMN `icon_image` DROP DEFAULT;
-
+ALTER TABLE `third_party_auth_ltiproviderconfig` ADD COLUMN `icon_image` varchar(100) NOT NULL;
+ALTER TABLE `third_party_auth_oauth2providerconfig` ADD COLUMN `icon_image` varchar(100) NOT NULL;
+ALTER TABLE `third_party_auth_samlproviderconfig` ADD COLUMN `icon_image` varchar(100) NOT NULL;
 COMMIT;
+
 BEGIN;
 CREATE TABLE `verified_track_content_verifiedtrackcohortedcourse` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `course_key` varchar(255) NOT NULL UNIQUE, `enabled` bool NOT NULL);
 
