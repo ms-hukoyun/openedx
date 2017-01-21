@@ -160,13 +160,15 @@ COMMIT;
 BEGIN;
 /*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `xseries_ad_enabled` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `xseries_ad_enabled` DROP DEFAULT;
-
 COMMIT;
+
+/*
 BEGIN;
 ALTER TABLE `programs_programsapiconfig` ADD COLUMN `program_listing_enabled` bool DEFAULT 0 NOT NULL;
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `program_listing_enabled` DROP DEFAULT;
-
 COMMIT;
+*/
+
 BEGIN;
 /*ALTER TABLE `programs_programsapiconfig` ADD COLUMN `program_details_enabled` bool DEFAULT 0 NOT NULL;*/
 ALTER TABLE `programs_programsapiconfig` ALTER COLUMN `program_details_enabled` DROP DEFAULT;
