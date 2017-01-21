@@ -909,6 +909,9 @@ BEGIN;
 ALTER TABLE `course_overviews_courseoverview` ADD COLUMN `facebook_url` longtext NULL;
 COMMIT;
 */
+BEGIN;
+ALTER TABLE `course_overviews_courseoverview` ALTER COLUMN `self_paced` SET DEFAULT 0;
+COMMIT;
 
 /*
 BEGIN;
